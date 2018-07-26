@@ -1,100 +1,34 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 namespace GitReport.CLI
 {
     class DateAndPathValidation                        
     {
-        public GitReportArguments GetArgsForGitDiff
+        public bool ValidateGitDiffReportArgs(string[] arguments, GitReportArguments getArg)         
         {
-            get;
-            set;
-        } = new GitReportArguments();
-        public ValidationErrorsHandler GetErrorsHandled
-        {
-            get;
-        } = new ValidationErrorsHandler();
-        private string DateValidation(string arg, int whichDate)
-        {
-            string[] formats = new string[] { "dd/MM/yyyy", "d/M/yyyy", "MM/dd/yyyy",
-                "M/d/yyyy","dd.MM.yyyy", "d.M.yyyy", "MM-dd-yyyy", "M-d-yyyy",
-                "dd-MM-yyyy", "d-M-yyyy", "MM.dd.yyyy", "M.d.yyyy" };
+            DateTime.TryParse(arguments[0], out var SinceDate);
+            DateTime.TryParse(arguments[1], out var BeforeDate);
+            getArg.DateSince = SinceDate;
+            getArg.DateBefore = BeforeDate;
 
-            while (!DateTime.TryParseExact(arg, formats, GetArgsForGitDiff.CultureInfo, 
-                    DateTimeStyles.None, out GetArgsForGitDiff.dateSince))        
+            if (Directory.Exists(arguments[2]))
             {
-                arg = GetErrorsHandled.HandleDateFormatError(whichDate);
-            }
-            arg = GetArgsForGitDiff.dateSince.ToString();
-            return arg;
-        }
-        public string PathValidation(string arg)
-        {
-            if (arg == null)
-            {
-                return PathValidationLoop(arg);
-            }
-            if (arg.Contains("Phoenix"))                       
-            {
-                return PathValidationLoop(arg);
+                getArg.GitPath = arguments[2];
             }
             else
             {
-                return PathValidationLoop(GetErrorsHandled.EnterPath());
+                getArg.GitPath = "no path found";
             }
-        }
-        public string PathValidationLoop(string arg)
-        {
-            while (!Directory.Exists(arg))
+
+            if (getArg.DateSince == DateTime.MinValue ||
+                getArg.DateBefore == DateTime.MinValue ||
+                getArg.GitPath == "no path found" ||
+                SinceDate > BeforeDate)
             {
-                arg = GetErrorsHandled.EnterPath();
-            }
-            return arg;
-        }
-        public void SettingWrongArgsRight(int wrongDate )
-        {
-            GetArgsForGitDiff.GitArguments[0] = DateValidation(GetArgsForGitDiff.
-                GitArguments[0], wrongDate);
-            GetArgsForGitDiff.GitArguments[1] = DateValidation(GetArgsForGitDiff.
-                GitArguments[1], wrongDate);
-
-
-            DateTime.TryParse(GetArgsForGitDiff.GitArguments[0],
-                out GetArgsForGitDiff.dateSince);
-            DateTime.TryParse(GetArgsForGitDiff.GitArguments[1], 
-                out GetArgsForGitDiff.dateBefore);
-
-            if (GetArgsForGitDiff.dateSince > GetArgsForGitDiff.dateBefore)
-            {
-                SettingWrongArgsRight(wrongDate);
-            }
-        }
-        public void ValidatePathAndDate()
-        {
-            for (int i = 0; i < GetArgsForGitDiff.GitArguments.Length; i++)
-            {
-                if (i == GetArgsForGitDiff.GitArguments.Length - 1)
-                {
-                    GetArgsForGitDiff.GitArguments[i] = PathValidation
-                        (GetArgsForGitDiff.GitArguments[i]);
-                }
-                else
-                {
-                    GetArgsForGitDiff.GitArguments[i] = DateValidation(
-                        GetArgsForGitDiff.GitArguments[i],i);
-                }
+                return false;
             }
 
-            DateTime.TryParse(GetArgsForGitDiff.GitArguments[0], 
-                out GetArgsForGitDiff.dateSince);
-            DateTime.TryParse(GetArgsForGitDiff.GitArguments[1], out 
-                GetArgsForGitDiff.dateBefore);
-
-            if (GetArgsForGitDiff.dateSince > GetArgsForGitDiff.dateBefore)
-            {
-                SettingWrongArgsRight(2);
-            }
+            return true;
         }
     }
 }
-
