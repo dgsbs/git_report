@@ -1,104 +1,59 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 namespace GitReport.CLI
 {
     class GitDiffReportProcess
     {
-        public DateAndPathValidation ValidateArgsForGitDiff
-        {
-            get;
-            set;
-        } = new DateAndPathValidation();
-        private string CreateFileForGitDiffReport()
-        {
-            Console.WriteLine("Choose directory and file name for your Git report.");
-            return Console.ReadLine(); ;                                                                        
-        }
-        private string RunProcessWithGitCommands(string arg)
+        private static string gitLogCommand = "log --pretty=\"%H\" --before=\"";
+        private string RunProcessWithGitCommands(string arg, GitReportArguments getArg)            
         {
             ProcessStartInfo startInfo = new ProcessStartInfo("git")
             {
-                WorkingDirectory = ValidateArgsForGitDiff.GetArgsForGitDiff.GitArguments[2],
+                WorkingDirectory = getArg.GitPath,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 Arguments = arg
             };
 
-            Process process = new Process();
-            process.StartInfo = startInfo;
-            process.Start();
-            string processTemp = process.StandardOutput.ReadToEnd();
-            process.CloseMainWindow();
-            process.Dispose();
-
-            return processTemp;
-        }
-        private string CutDate(string arg)
-        {
-            if (arg.Length == 20)
+            string wholeStdOut = string.Empty;
+            string stdOneLine;
+            using (Process process = new Process())
             {
-                return arg.Substring(0, 8);
+                process.StartInfo = startInfo;
+                process.Start();
+                while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
+                {
+                    wholeStdOut += stdOneLine;
+                    wholeStdOut += "\n";
+                    if (wholeStdOut.Length >= int.MaxValue)
+                    {
+                        break;
+                    }
+                }
             }
-            else if (arg.Length == 21)
-            {
-                return arg.Substring(0, 9);
-            }
-            else
-            {
-                return arg.Substring(0, 10);
-            }
+            return wholeStdOut;
         }
-        private string BuildBeforeArgument()
+        private string BuildBeforeArgument(GitReportArguments getArg) 
         {
-            return "log --pretty=\"%H\" --before=\"24:00 " +
-                CutDate(ValidateArgsForGitDiff.GetArgsForGitDiff.GitArguments[1]) + "\" -1";
+            return $"{gitLogCommand}24:00 {getArg.DateBefore.ToShortDateString()}\" -1";          
         }
-        private string BuildSinceArgument()
+        private string BuildSinceArgument(GitReportArguments getArg)
         {
-            return "log --pretty=\"%H\" --before=\"00:00 " + 
-                CutDate(ValidateArgsForGitDiff.GetArgsForGitDiff.GitArguments[0]) + "\" -1";
+            return $"{gitLogCommand}00:00 {getArg.DateSince.ToShortDateString()}\" -1";
         }
         private string BuildGitDiffArgument(string commitSince, string commitBefore)
         {
-            return "diff --numstat " + commitSince.Trim() + ".." + commitBefore.Trim();
+            return $"diff --numstat {commitSince.Trim()}..{commitBefore.Trim()}";
         }
-        private string RunGitDiff()
+        public string RunGitDiff(GitReportArguments getArg)
         {
-            string sinceArgument = BuildSinceArgument();
-            string beforeArgument = BuildBeforeArgument();
-            string commitFromSinceDate = RunProcessWithGitCommands(sinceArgument);
-            string commitFromBeforeDate = RunProcessWithGitCommands(beforeArgument);
-
-            if (commitFromBeforeDate == commitFromSinceDate)
-            {
-                Console.WriteLine("Dates you did choose, have produced only one commit." +
-                    " Run this again with different dates.");
-            }
+            string sinceArgument = BuildSinceArgument(getArg);
+            string beforeArgument = BuildBeforeArgument(getArg);
+            string commitFromSinceDate = RunProcessWithGitCommands(sinceArgument, getArg);
+            string commitFromBeforeDate = RunProcessWithGitCommands(beforeArgument, getArg);
             string argForGitDiff = BuildGitDiffArgument(commitFromSinceDate, 
                 commitFromBeforeDate);
 
-            return RunProcessWithGitCommands(argForGitDiff);
-        }
-        public void HandleGitDiffProcess()
-        {
-            System.Text.Encoding encoding = System.Text.Encoding.UTF8;
-
-            if (encoding.GetMaxByteCount((RunGitDiff()).ToCharArray().Length) < int.MaxValue)
-            {
-                string dataFromProcessDiff = RunGitDiff();
-                byte[] byteArray = encoding.GetBytes(dataFromProcessDiff);
-
-                using (MemoryStream memStream = new MemoryStream(byteArray))
-                {
-                    using (FileStream fileStream = 
-                        new FileStream(CreateFileForGitDiffReport(), FileMode.Create))      
-                    {
-                        memStream.CopyTo(fileStream);
-                    }
-                }
-                string gitReport = new string(encoding.GetChars(byteArray));               
-            }
+            return RunProcessWithGitCommands(argForGitDiff,getArg);
         }
     }
 }
