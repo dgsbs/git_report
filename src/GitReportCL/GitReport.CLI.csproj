@@ -7,4 +7,25 @@
     <RootNamespace>GitReport.CLI</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="GitReportHandler.cs" />
+    <Compile Remove="RunGitReport.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="jsconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration">
+      <HintPath>..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\System.Configuration.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
