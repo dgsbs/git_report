@@ -2,27 +2,26 @@
 using System.IO;
 namespace GitReport.CLI
 {
-    class DateAndPathValidation                        
+    class GitDiffArgumentsValidation                        
     {
-        public bool ValidateGitDiffReportArgs(string[] arguments, GitReportArguments getArg)         
+        public bool AreDatesAndPathValid(string[] arguments, GitDiffArguments gitArgument)         
         {
-            DateTime.TryParse(arguments[0], out var SinceDate);
-            DateTime.TryParse(arguments[1], out var BeforeDate);
-            getArg.DateSince = SinceDate;
-            getArg.DateBefore = BeforeDate;
+            bool sinceDateFlag = DateTime.TryParse(arguments[0], out var SinceDate);
+            bool beforeDateFlag = DateTime.TryParse(arguments[1], out var BeforeDate);
+            gitArgument.DateSince = SinceDate;
+            gitArgument.DateBefore = BeforeDate;
 
             if (Directory.Exists(arguments[2]))
             {
-                getArg.GitPath = arguments[2];
+                gitArgument.GitPath = arguments[2];
             }
             else
             {
-                getArg.GitPath = "no path found";
+                gitArgument.GitPath = string.Empty;
             }
 
-            if (getArg.DateSince == DateTime.MinValue ||
-                getArg.DateBefore == DateTime.MinValue ||
-                getArg.GitPath == "no path found" ||
+            if (!sinceDateFlag || !beforeDateFlag ||
+                gitArgument.GitPath == string.Empty ||
                 SinceDate > BeforeDate)
             {
                 return false;

@@ -1,21 +1,21 @@
 ﻿using System.Diagnostics;
 namespace GitReport.CLI
 {
-    class GitDiffReportProcess
+    class GitDiffProcess
     {
-        private static string gitLogCommand = "log --pretty=\"%H\" --before=\"";
-        private string RunProcessWithGitCommands(string arg, GitReportArguments getArg)            
+        private static string partialGitLogCommand = "log --pretty=\"%H\" --before=\"";
+        private string RunProcessWithGitCommands(string arg, GitDiffArguments gitArgument)            
         {
             ProcessStartInfo startInfo = new ProcessStartInfo("git")
             {
-                WorkingDirectory = getArg.GitPath,
+                WorkingDirectory = gitArgument.GitPath,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 Arguments = arg
             };
 
-            string wholeStdOut = string.Empty;
-            string stdOneLine;
+            var wholeStdOut = string.Empty;
+            var stdOneLine = string.Empty;
             using (Process process = new Process())
             {
                 process.StartInfo = startInfo;
@@ -32,28 +32,28 @@ namespace GitReport.CLI
             }
             return wholeStdOut;
         }
-        private string BuildBeforeArgument(GitReportArguments getArg) 
+        private string BuildGitLogBeforeCommand(GitDiffArguments gitArgument) 
         {
-            return $"{gitLogCommand}24:00 {getArg.DateBefore.ToShortDateString()}\" -1";          
+            return $"{partialGitLogCommand}24:00 {gitArgument.DateBefore.ToShortDateString()}\" -1";          
         }
-        private string BuildSinceArgument(GitReportArguments getArg)
+        private string BuildGitLogSinceCommand(GitDiffArguments gitArgument)
         {
-            return $"{gitLogCommand}00:00 {getArg.DateSince.ToShortDateString()}\" -1";
+            return $"{partialGitLogCommand}00:00 {gitArgument.DateSince.ToShortDateString()}\" -1";
         }
-        private string BuildGitDiffArgument(string commitSince, string commitBefore)
+        private string BuildGitDiffCommand(string commitSince, string commitBefore)
         {
             return $"diff --numstat {commitSince.Trim()}..{commitBefore.Trim()}";
         }
-        public string RunGitDiff(GitReportArguments getArg)
+        public string RunGitDiffProcess(GitDiffArguments gitArgument)
         {
-            string sinceArgument = BuildSinceArgument(getArg);
-            string beforeArgument = BuildBeforeArgument(getArg);
-            string commitFromSinceDate = RunProcessWithGitCommands(sinceArgument, getArg);
-            string commitFromBeforeDate = RunProcessWithGitCommands(beforeArgument, getArg);
-            string argForGitDiff = BuildGitDiffArgument(commitFromSinceDate, 
+            var sinceArgument = BuildGitLogSinceCommand(gitArgument);
+            var beforeArgument = BuildGitLogBeforeCommand(gitArgument);
+            var commitFromSinceDate = RunProcessWithGitCommands(sinceArgument, gitArgument);
+            var commitFromBeforeDate = RunProcessWithGitCommands(beforeArgument, gitArgument);
+            var argForGitDiff = BuildGitDiffCommand(commitFromSinceDate, 
                 commitFromBeforeDate);
 
-            return RunProcessWithGitCommands(argForGitDiff,getArg);
+            return RunProcessWithGitCommands(argForGitDiff,gitArgument);
         }
     }
 }

@@ -1,31 +1,31 @@
 ﻿using System;
 namespace GitReport.CLI
 {
-    class GitReportErrorsHandler
+    class GitDiffErrors
     {
-        public void HandleDateFormatOrPathError(string[] currentArguments, 
-            GitReportArguments getArg, out string[] newArguments)
+        public void FixDatePathError(string[] currentArguments, 
+            GitDiffArguments gitArgument, out string[] newArguments)
         {
-            if (getArg.DateSince == DateTime.MinValue)
+            if (gitArgument.DateSince == DateTime.MinValue)
             {
                 currentArguments[0] = EnterDate("start-date", true);
             }
 
-            if (getArg.DateBefore == DateTime.MinValue)
+            if (gitArgument.DateBefore == DateTime.MinValue)
             {
                 currentArguments[1] = EnterDate("end-date", true);
             }
 
-            if (getArg.DateSince > getArg.DateBefore &&
-                getArg.DateSince != DateTime.MinValue &&
-                getArg.DateBefore != DateTime.MinValue)
+            if (gitArgument.DateSince > gitArgument.DateBefore &&
+                gitArgument.DateSince != DateTime.MinValue &&
+                gitArgument.DateBefore != DateTime.MinValue)
             {
                 Console.WriteLine("The end-date was more previous then start - date.");
                 currentArguments[0] = EnterDate("start-date", false);
                 currentArguments[1] = EnterDate("end-date", false);
             }
 
-            if (getArg.GitPath == "no path found")
+            if (gitArgument.GitPath == string.Empty)
             {
                 currentArguments[2] = EnterPath(true);
             }
@@ -58,13 +58,13 @@ namespace GitReport.CLI
         }
         public string[] CreateArgsForGitDiffReport()
         {
-            string[] array = new string[3];
+            string[] tempGitArguments = new string[3];
             Console.WriteLine("You have to pass 3 arguments for GitReport to work. ");
-            array[0] = EnterDate("start-date", false);
-            array[1] = EnterDate("end-date", false);
-            array[2] = EnterPath(false);
+            tempGitArguments[0] = EnterDate("start-date", false);
+            tempGitArguments[1] = EnterDate("end-date", false);
+            tempGitArguments[2] = EnterPath(false);
 
-            return array;
+            return tempGitArguments;
         }
     }
 }

@@ -5,31 +5,30 @@ namespace GitReport.CLI
     {
         static void Main(string[] args)
         {
-            GitReportArguments getArg = new GitReportArguments();
-            DateAndPathValidation startValidation =  new DateAndPathValidation();
-            GitDiffReportProcess runProcess = new GitDiffReportProcess();
-            GitReportErrorsHandler operate = new GitReportErrorsHandler();
+            GitDiffArguments gitArgument = new GitDiffArguments();
+            GitDiffArgumentsValidation gitArgsValidator =  new GitDiffArgumentsValidation();
+            GitDiffProcess processRunner = new GitDiffProcess();
+            GitDiffErrors errorManager = new GitDiffErrors();
             
             if (args.Length == 3)
             {
-                while (!startValidation.ValidateGitDiffReportArgs(args, getArg))
-                {
-                    string[] editedArgs = new string[3];
-                    operate.HandleDateFormatOrPathError(args, getArg, out editedArgs);
-                    args = editedArgs;
-                }
-                Console.WriteLine(runProcess.RunGitDiff(getArg)); 
+                RunGitDiff(args, gitArgument);
             }
             else
             {
-                string[] newArgs = operate.CreateArgsForGitDiffReport();
-                while (!startValidation.ValidateGitDiffReportArgs(newArgs, getArg))
+                string[] newArgs = errorManager.CreateArgsForGitDiffReport();
+                RunGitDiff(newArgs, gitArgument);
+            }
+
+            void RunGitDiff (string[] arguments, GitDiffArguments gitArg)
+            {
+                while (!gitArgsValidator.AreDatesAndPathValid(arguments, gitArg))
                 {
                     string[] editedArgs = new string[3];
-                    operate.HandleDateFormatOrPathError(newArgs, getArg, out editedArgs);
-                    newArgs = editedArgs;
+                    errorManager.FixDatePathError(arguments, gitArg, out editedArgs);
+                    arguments = editedArgs;
                 }
-                Console.WriteLine(runProcess.RunGitDiff(getArg));
+                Console.WriteLine(processRunner.RunGitDiffProcess(gitArg));
             }
         }
     }
