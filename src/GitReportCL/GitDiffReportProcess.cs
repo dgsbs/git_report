@@ -1,9 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 namespace GitReport.CLI
 {
     class GitDiffProcess
     {
         private static string partialGitLogCommand = "log --pretty=\"%H\" --before=\"";
+        Dictionary<string, DictionaryArgsForGitDiff> dictionaryManager;
+        public GitDiffProcess(Dictionary<string, DictionaryArgsForGitDiff> dictionaryManager)
+        {
+            this.dictionaryManager = dictionaryManager;
+        }
         private string RunProcessWithGitCommands(string arg, GitDiffArguments gitArgument)            
         {
             ProcessStartInfo startInfo = new ProcessStartInfo("git")
@@ -18,19 +24,32 @@ namespace GitReport.CLI
             var stdOneLine = string.Empty;
             using (Process process = new Process())
             {
+                GitDiffFinalOutputBuilder FinalBuildManager = 
+                    new GitDiffFinalOutputBuilder(dictionaryManager);
+                
                 process.StartInfo = startInfo;
                 process.Start();
-                while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
+                
+                if (arg.Contains("diff"))
                 {
-                    wholeStdOut += stdOneLine;
-                    wholeStdOut += "\n";
-                    if (wholeStdOut.Length >= int.MaxValue)
+                    while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
                     {
-                        break;
+                        FinalBuildManager.ManageDataFromGitDiff(stdOneLine);
+                        wholeStdOut += stdOneLine;
+                        wholeStdOut += "\n";
+                        if (wholeStdOut.Length >= int.MaxValue)
+                        {
+                            break;
+                        }
                     }
+                    return wholeStdOut;
+                }
+                else
+                {
+                    stdOneLine = process.StandardOutput.ReadLine();
+                    return stdOneLine;
                 }
             }
-            return wholeStdOut;
         }
         private string BuildGitLogBeforeCommand(GitDiffArguments gitArgument) 
         {

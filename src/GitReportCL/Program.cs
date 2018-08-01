@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 namespace GitReport.CLI
 {
     class Program
@@ -6,8 +6,6 @@ namespace GitReport.CLI
         static void Main(string[] args)
         {
             GitDiffArguments gitArgument = new GitDiffArguments();
-            GitDiffArgumentsValidation gitArgsValidator =  new GitDiffArgumentsValidation();
-            GitDiffProcess processRunner = new GitDiffProcess();
             GitDiffErrors errorManager = new GitDiffErrors();
             
             if (args.Length == 3)
@@ -22,13 +20,19 @@ namespace GitReport.CLI
 
             void RunGitDiff (string[] arguments, GitDiffArguments gitArg)
             {
+                GitDiffArgumentsValidation gitArgsValidator = new GitDiffArgumentsValidation();
+                Dictionary<string, DictionaryArgsForGitDiff> dictionaryManager = new Dictionary<string, DictionaryArgsForGitDiff>();
+
                 while (!gitArgsValidator.AreDatesAndPathValid(arguments, gitArg))
                 {
                     string[] editedArgs = new string[3];
                     errorManager.FixDatePathError(arguments, gitArg, out editedArgs);
                     arguments = editedArgs;
                 }
-                Console.WriteLine(processRunner.RunGitDiffProcess(gitArg));
+                GitDiffProcess processRunner = new GitDiffProcess(dictionaryManager);
+                processRunner.RunGitDiffProcess(gitArg);
+                GitDiffFinalOutputBuilder reportBuilder = new GitDiffFinalOutputBuilder(dictionaryManager);
+                reportBuilder.ShowGitDiffDictionary();
             }
         }
     }
