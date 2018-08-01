@@ -11,21 +11,22 @@ namespace GitReport.CLI
         {
             this.dictionaryManager = dictionaryManager;
         }
-        public void ManageDataFromGitDiff(string oneLineFormStdOut)
+        public void ManageDataFromGitDiff(string oneLineFromStdOut)
         {
             var componentNewId = string.Empty;
-            string[] separateGitDiffOutput = oneLineFormStdOut.Split(new char[] { ' ', '\t' });
+            string[] separatedGitDiffOutput = oneLineFromStdOut.Split(new char[] { ' ', '\t' });
 
-            var addedChanges = CheckIfStringIsNumber(separateGitDiffOutput[0]);
-            var removedChanges = CheckIfStringIsNumber(separateGitDiffOutput[1]);
+            var addedChanges = CheckIfStringIsNumber(separatedGitDiffOutput[0]);
+            var removedChanges = CheckIfStringIsNumber(separatedGitDiffOutput[1]);
             DictionaryArgsForGitDiff DictionaryArg = 
                 new DictionaryArgsForGitDiff(addedChanges,removedChanges);
 
-            JsonConfigManager JsonDataManager = new JsonConfigManager();
+            JsonConfigManager jsonDataManager = new JsonConfigManager();
 
-            if (JsonDataManager.CheckIfPathMatchesPathsInJson(separateGitDiffOutput[2],out componentNewId))
+            if (jsonDataManager.CheckIfPathMatchesPathsInJson
+                (separatedGitDiffOutput[2],out componentNewId))
             {
-                if (CheckIfObjectExists(componentNewId, separateGitDiffOutput)) { }
+                if (CheckIfObjectExists(componentNewId, separatedGitDiffOutput)) { }
                 else
                 {
                     dictionaryManager.Add(componentNewId, DictionaryArg);
@@ -41,14 +42,14 @@ namespace GitReport.CLI
                     dictionaryItem.Value.ChangesAdded, dictionaryItem.Value.ChangesRemoved);
             }
         }
-        private bool CheckIfObjectExists(string temporaryKey, string[] separateGitDiffOutput)
+        private bool CheckIfObjectExists(string temporaryKey, string[] separatedGitDiffOutput)
         {
             foreach (var dictionaryItem in dictionaryManager)
             {
                 if(dictionaryManager.ContainsKey(temporaryKey))
                 {
-                    dictionaryItem.Value.ChangesAdded += Int32.Parse(separateGitDiffOutput[0]);
-                    dictionaryItem.Value.ChangesRemoved += Int32.Parse(separateGitDiffOutput[1]);
+                    dictionaryItem.Value.ChangesAdded += Int32.Parse(separatedGitDiffOutput[0]);
+                    dictionaryItem.Value.ChangesRemoved += Int32.Parse(separatedGitDiffOutput[1]);
                     return true;
                 }
             }
@@ -56,14 +57,13 @@ namespace GitReport.CLI
         }
         private int CheckIfStringIsNumber(string numberOfChanges)
         {
-            int tempForFormatCheck = 0;
-            if (Int32.TryParse(numberOfChanges,out tempForFormatCheck))
+            if (Int32.TryParse(numberOfChanges, out int tempForFormatCheck))
             {
                 return tempForFormatCheck;
             }
             else
             {
-                return tempForFormatCheck;
+                return 0;
             }
         }
     }
