@@ -24,7 +24,7 @@ namespace GitReport.CLI
             var stdOneLine = string.Empty;
             using (Process process = new Process())
             {
-                GitDiffFinalOutputBuilder FinalBuildManager = 
+                GitDiffFinalOutputBuilder finalOutputManager = 
                     new GitDiffFinalOutputBuilder(dictionaryManager);
                 
                 process.StartInfo = startInfo;
@@ -34,15 +34,15 @@ namespace GitReport.CLI
                 {
                     while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
                     {
-                        FinalBuildManager.ManageDataFromGitDiff(stdOneLine);
+                        finalOutputManager.ManageDataFromGitDiff(stdOneLine);
                         wholeStdOut += stdOneLine;
-                        wholeStdOut += "\n";
                         if (wholeStdOut.Length >= int.MaxValue)
                         {
                             break;
                         }
                     }
-                    return wholeStdOut;
+                    finalOutputManager.ShowGitDiffDictionary();
+                    return string.Empty;
                 }
                 else
                 {
