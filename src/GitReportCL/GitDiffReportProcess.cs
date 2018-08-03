@@ -1,15 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 namespace GitReport.CLI
 {
     class GitDiffProcess
     {
         private static string partialGitLogCommand = "log --pretty=\"%H\" --before=\"";
-        Dictionary<string, DictionaryArgsForGitDiff> dictionaryManager;
-        public GitDiffProcess(Dictionary<string, DictionaryArgsForGitDiff> dictionaryManager)
-        {
-            this.dictionaryManager = dictionaryManager;
-        }
         private string RunProcessWithGitCommands(string arg, GitDiffArguments gitArgument)            
         {
             ProcessStartInfo startInfo = new ProcessStartInfo("git")
@@ -24,9 +18,6 @@ namespace GitReport.CLI
             var stdOneLine = string.Empty;
             using (Process process = new Process())
             {
-                GitDiffFinalOutputBuilder finalOutputManager = 
-                    new GitDiffFinalOutputBuilder(dictionaryManager);
-                
                 process.StartInfo = startInfo;
                 process.Start();
                 
@@ -34,15 +25,14 @@ namespace GitReport.CLI
                 {
                     while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
                     {
-                        finalOutputManager.ManageDataFromGitDiff(stdOneLine);
                         wholeStdOut += stdOneLine;
+                        wholeStdOut += "\n";
                         if (wholeStdOut.Length >= int.MaxValue)
                         {
                             break;
                         }
                     }
-                    finalOutputManager.ShowGitDiffDictionary();
-                    return string.Empty;
+                    return wholeStdOut;
                 }
                 else
                 {

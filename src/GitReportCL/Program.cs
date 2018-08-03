@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 namespace GitReport.CLI
 {
     class Program
@@ -21,8 +22,6 @@ namespace GitReport.CLI
             void RunGitDiff (string[] arguments, GitDiffArguments gitArg)
             {
                 GitDiffArgumentsValidation gitArgsValidator = new GitDiffArgumentsValidation();
-                Dictionary<string, DictionaryArgsForGitDiff> dictionaryManager = 
-                    new Dictionary<string, DictionaryArgsForGitDiff>();
 
                 while (!gitArgsValidator.AreDatesAndPathValid(arguments, gitArg))
                 {
@@ -30,9 +29,23 @@ namespace GitReport.CLI
                     errorManager.FixDatePathError(arguments, gitArg, out editedArgs);
                     arguments = editedArgs;
                 }
-                GitDiffProcess processRunner = new GitDiffProcess(dictionaryManager);
-                processRunner.RunGitDiffProcess(gitArg);
+                GitDiffProcess processRunner = new GitDiffProcess();
+                string processOutput = processRunner.RunGitDiffProcess(gitArg);
+
+                ReportCreator reportManager = new ReportCreator();
+                ShowReport(reportManager.CreateWholeReport(processOutput));
             }
+
+            void ShowReport (Dictionary<string, ModificationCounters> dictionaryManager)
+            {
+                foreach (var dictionaryItem in dictionaryManager)
+                {
+                    Console.WriteLine("Component id: {0}\nCode added in component: " +
+                        "{1}\nCode removed in component: {2}\n", dictionaryItem.Key,
+                        dictionaryItem.Value.AdditionCounter, dictionaryItem.Value.DeletionCounter);
+                }
+            }
+
         }
     }
 }

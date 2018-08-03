@@ -6,28 +6,24 @@ namespace GitReport.CLI
     {
         public bool AreDatesAndPathValid(string[] arguments, GitDiffArguments gitArgument)         
         {
-            bool sinceDateFlag = DateTime.TryParse(arguments[0], out var SinceDate);
-            bool beforeDateFlag = DateTime.TryParse(arguments[1], out var BeforeDate);
-            bool pathFlag = false;
+            bool sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
             gitArgument.DateSince = SinceDate;
+
+            bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
             gitArgument.DateBefore = BeforeDate;
 
-            if (Directory.Exists(arguments[2]))
+            bool pathExistenceValidator = Directory.Exists(arguments[2]);
+
+            if (pathExistenceValidator)
             {
                 gitArgument.GitPath = arguments[2];
-                pathFlag = true;
-            }
-            else
-            {
-                gitArgument.GitPath = string.Empty;
             }
 
-            if (!sinceDateFlag || !beforeDateFlag || !pathFlag ||
+            if (!sinceDateValidator || !beforeDateValidator || !pathExistenceValidator ||
                 SinceDate > BeforeDate)
             {
                 return false;
             }
-
             return true;
         }
     }

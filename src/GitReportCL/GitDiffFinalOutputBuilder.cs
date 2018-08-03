@@ -2,58 +2,53 @@
 using System.Collections.Generic;
 namespace GitReport.CLI
 {
-    class GitDiffFinalOutputBuilder
+    class ReportCreator
     {
-        Dictionary<string, DictionaryArgsForGitDiff> dictionaryManager = 
-            new Dictionary<string, DictionaryArgsForGitDiff>();
-        public GitDiffFinalOutputBuilder(Dictionary<string, 
-            DictionaryArgsForGitDiff> dictionaryManager)
-        {
-            this.dictionaryManager = dictionaryManager;
-        }
-        public void ManageDataFromGitDiff(string oneLineFromStdOut)
+        Dictionary<string, ModificationCounters> dictionaryManager = 
+            new Dictionary<string, ModificationCounters>();
+
+        JsonConfig jsonManager = new JsonConfig();
+        private void CreateReportForComponent(string oneLineFromStdOut)
         {
             var componentNewId = string.Empty;
-            string[] separatedGitDiffOutput = oneLineFromStdOut.Split(new char[] { ' ', '\t' });
+            string[] separatedGitDiffOutput = oneLineFromStdOut.Split('\t');
 
-            var addedChanges = CheckIfStringIsNumber(separatedGitDiffOutput[0]);
-            var removedChanges = CheckIfStringIsNumber(separatedGitDiffOutput[1]);
-            DictionaryArgsForGitDiff DictionaryArg = 
-                new DictionaryArgsForGitDiff(addedChanges,removedChanges);
+            ModificationCounters modArg = new ModificationCounters();
+            modArg.AdditionCounter = CheckIfStringIsNumber(separatedGitDiffOutput[0]);
+            modArg.DeletionCounter = CheckIfStringIsNumber(separatedGitDiffOutput[1]);
 
-            JsonConfigManager jsonDataManager = new JsonConfigManager();
-
-            if (jsonDataManager.CheckIfPathMatchesPathsInJson
-                (separatedGitDiffOutput[2],out componentNewId))
+            if (jsonManager.TryMatchPaths(separatedGitDiffOutput[2], out componentNewId))
             {
-                if (CheckIfObjectExists(componentNewId, separatedGitDiffOutput)) { }
+                if (CheckIfKeyExists(componentNewId))
+                {
+                    dictionaryManager[componentNewId].AdditionCounter += modArg.AdditionCounter;
+                    dictionaryManager[componentNewId].DeletionCounter += modArg.DeletionCounter;
+                }
                 else
                 {
-                    dictionaryManager.Add(componentNewId, DictionaryArg);
+                    dictionaryManager.Add(componentNewId, modArg);
                 }
             }
         }
-        public void ShowGitDiffDictionary()             
+        public Dictionary<string, ModificationCounters> CreateWholeReport(string wholeStdOut)
         {
-            foreach (var dictionaryItem in dictionaryManager)
+            string[] outputLineByLine = wholeStdOut.Split('\n');
+            for (int i = 0; i < outputLineByLine.Length - 1; i ++)                                                            
             {
-                Console.WriteLine("Component id: {0}\nCode added in component: " +
-                    "{1}\nCode removed in component: {2}\n", dictionaryItem.Key,
-                    dictionaryItem.Value.ChangesAdded, dictionaryItem.Value.ChangesRemoved);
+                CreateReportForComponent(outputLineByLine[i]);
             }
+            return dictionaryManager;
         }
-        private bool CheckIfObjectExists(string temporaryKey, string[] separatedGitDiffOutput)
+        private bool CheckIfKeyExists(string temporaryKey)
         {
-            foreach (var dictionaryItem in dictionaryManager)
+            if (dictionaryManager.ContainsKey(temporaryKey))
             {
-                if(dictionaryManager.ContainsKey(temporaryKey))
-                {
-                    dictionaryItem.Value.ChangesAdded += Int32.Parse(separatedGitDiffOutput[0]);
-                    dictionaryItem.Value.ChangesRemoved += Int32.Parse(separatedGitDiffOutput[1]);
-                    return true;
-                }
+                return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
         private int CheckIfStringIsNumber(string numberOfChanges)
         {

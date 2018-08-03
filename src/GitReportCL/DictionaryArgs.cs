@@ -1,13 +1,8 @@
 ﻿namespace GitReport.CLI
 {
-    class DictionaryArgsForGitDiff
+    class ModificationCounters
     {
-        public DictionaryArgsForGitDiff(int changesAdded, int changesRemoved)
-        {
-            this.ChangesAdded = changesAdded;
-            this.ChangesRemoved = changesRemoved;
-        }
-        public int ChangesAdded { get; set; }
-        public int ChangesRemoved { get; set; }
+        public int AdditionCounter { get; set; }
+        public int DeletionCounter { get; set; }
     }
 }
