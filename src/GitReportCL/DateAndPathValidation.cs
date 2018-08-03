@@ -4,7 +4,12 @@ namespace GitReport.CLI
 {
     class GitDiffArgumentsValidation                        
     {
-        public bool AreDatesAndPathValid(string[] arguments, GitDiffArguments gitArgument)         
+        GitDiffArguments gitArgument = new GitDiffArguments();
+        public GitDiffArgumentsValidation(GitDiffArguments gitArgument)
+        {
+            this.gitArgument = gitArgument;
+        }
+        public bool AreDatesAndPathValid(string[] arguments)         
         {
             bool sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
             gitArgument.DateSince = SinceDate;

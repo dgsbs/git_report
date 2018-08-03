@@ -13,42 +13,36 @@ namespace GitReport.CLI
             var componentNewId = string.Empty;
             string[] separatedGitDiffOutput = oneLineFromStdOut.Split('\t');
 
-            ModificationCounters modArg = new ModificationCounters();
-            modArg.AdditionCounter = CheckIfStringIsNumber(separatedGitDiffOutput[0]);
-            modArg.DeletionCounter = CheckIfStringIsNumber(separatedGitDiffOutput[1]);
+            ModificationCounters counterHandler = new ModificationCounters
+            {
+                AdditionCounter = CheckIfStringIsNumber(separatedGitDiffOutput[0]),
+                DeletionCounter = CheckIfStringIsNumber(separatedGitDiffOutput[1])
+            };
 
             if (jsonManager.TryMatchPaths(separatedGitDiffOutput[2], out componentNewId))
             {
-                if (CheckIfKeyExists(componentNewId))
+                if (dictionaryManager.ContainsKey(componentNewId)) 
                 {
-                    dictionaryManager[componentNewId].AdditionCounter += modArg.AdditionCounter;
-                    dictionaryManager[componentNewId].DeletionCounter += modArg.DeletionCounter;
+                    dictionaryManager[componentNewId].AdditionCounter += counterHandler.AdditionCounter;
+                    dictionaryManager[componentNewId].DeletionCounter += counterHandler.DeletionCounter;
                 }
                 else
                 {
-                    dictionaryManager.Add(componentNewId, modArg);
+                    dictionaryManager.Add(componentNewId, counterHandler);
                 }
             }
         }
-        public Dictionary<string, ModificationCounters> CreateWholeReport(string wholeStdOut)
+        public Dictionary<string, ModificationCounters> CreateReport(string gitOutput)
         {
-            string[] outputLineByLine = wholeStdOut.Split('\n');
-            for (int i = 0; i < outputLineByLine.Length - 1; i ++)                                                            
+            string[] outputLineByLine = gitOutput.Split('\n');
+            foreach (var line in outputLineByLine)
             {
-                CreateReportForComponent(outputLineByLine[i]);
+                if (!String.IsNullOrWhiteSpace(line))
+                {
+                    CreateReportForComponent(line);
+                }
             }
             return dictionaryManager;
-        }
-        private bool CheckIfKeyExists(string temporaryKey)
-        {
-            if (dictionaryManager.ContainsKey(temporaryKey))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
         private int CheckIfStringIsNumber(string numberOfChanges)
         {

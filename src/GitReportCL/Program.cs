@@ -21,9 +21,9 @@ namespace GitReport.CLI
 
             void RunGitDiff (string[] arguments, GitDiffArguments gitArg)
             {
-                GitDiffArgumentsValidation gitArgsValidator = new GitDiffArgumentsValidation();
+                GitDiffArgumentsValidation gitArgsValidator = new GitDiffArgumentsValidation(gitArgument);
 
-                while (!gitArgsValidator.AreDatesAndPathValid(arguments, gitArg))
+                while (!gitArgsValidator.AreDatesAndPathValid(arguments))
                 {
                     string[] editedArgs = new string[3];
                     errorManager.FixDatePathError(arguments, gitArg, out editedArgs);
@@ -33,7 +33,7 @@ namespace GitReport.CLI
                 string processOutput = processRunner.RunGitDiffProcess(gitArg);
 
                 ReportCreator reportManager = new ReportCreator();
-                ShowReport(reportManager.CreateWholeReport(processOutput));
+                ShowReport(reportManager.CreateReport(processOutput));
             }
 
             void ShowReport (Dictionary<string, ModificationCounters> dictionaryManager)
