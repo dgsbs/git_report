@@ -4,29 +4,31 @@ namespace GitReport.CLI
 {
     class GitDiffArgumentsValidation                        
     {
-        public bool AreDatesAndPathValid(string[] arguments, GitDiffArguments gitArgument)         
+        GitDiffArguments gitArgument = new GitDiffArguments();
+        public GitDiffArgumentsValidation(GitDiffArguments gitArgument)
         {
-            bool sinceDateFlag = DateTime.TryParse(arguments[0], out var SinceDate);
-            bool beforeDateFlag = DateTime.TryParse(arguments[1], out var BeforeDate);
+            this.gitArgument = gitArgument;
+        }
+        public bool AreDatesAndPathValid(string[] arguments)         
+        {
+            bool sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
             gitArgument.DateSince = SinceDate;
+
+            bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
             gitArgument.DateBefore = BeforeDate;
 
-            if (Directory.Exists(arguments[2]))
+            bool pathExistenceValidator = Directory.Exists(arguments[2]);
+
+            if (pathExistenceValidator)
             {
                 gitArgument.GitPath = arguments[2];
             }
-            else
-            {
-                gitArgument.GitPath = string.Empty;
-            }
 
-            if (!sinceDateFlag || !beforeDateFlag ||
-                gitArgument.GitPath == string.Empty ||
+            if (!sinceDateValidator || !beforeDateValidator || !pathExistenceValidator ||
                 SinceDate > BeforeDate)
             {
                 return false;
             }
-
             return true;
         }
     }

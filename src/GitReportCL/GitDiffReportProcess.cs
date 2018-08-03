@@ -20,17 +20,26 @@ namespace GitReport.CLI
             {
                 process.StartInfo = startInfo;
                 process.Start();
-                while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
+                
+                if (arg.Contains("diff"))
                 {
-                    wholeStdOut += stdOneLine;
-                    wholeStdOut += "\n";
-                    if (wholeStdOut.Length >= int.MaxValue)
+                    while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
                     {
-                        break;
+                        wholeStdOut += stdOneLine;
+                        wholeStdOut += "\n";
+                        if (wholeStdOut.Length >= int.MaxValue)
+                        {
+                            break;
+                        }
                     }
+                    return wholeStdOut;
+                }
+                else
+                {
+                    stdOneLine = process.StandardOutput.ReadLine();
+                    return stdOneLine;
                 }
             }
-            return wholeStdOut;
         }
         private string BuildGitLogBeforeCommand(GitDiffArguments gitArgument) 
         {
