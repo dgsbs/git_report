@@ -85,7 +85,7 @@ namespace GitReport.Tests
             Assert.True(isValid);
         }
         [Fact]
-        public void CreateReport_Test()
+        public void CreateReport_TestManyLines()
         {
             Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
             IJsonConfig jsonManager = new ReportCreatorForTests();
@@ -99,6 +99,41 @@ namespace GitReport.Tests
             Assert.Equal(2, dictionaryManager["Common.Knowledge"].InsertionCounter);
             Assert.Equal(3, dictionaryManager["Common.Knowledge"].DeletionCounter);
             Assert.Single(dictionaryManager);
+        }
+        [Fact]
+        public void CreateReport_TestSingleLine()
+        {
+            Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
+            IJsonConfig jsonManager = new ReportCreatorForTests();
+            ReportCreator reportCreator = new ReportCreator(jsonManager);
+            string testOutput = "1       1       Common/Knowledge/Start/Abort.txt\n";
+            dictionaryManager = reportCreator.CreateReport(testOutput);
+
+            Assert.Equal(1, dictionaryManager["Common.Knowledge"].InsertionCounter);
+            Assert.Equal(1, dictionaryManager["Common.Knowledge"].DeletionCounter);
+            Assert.Single(dictionaryManager);
+        }
+        [Fact]
+        public void CreateReport_TestEmptyLine()
+        {
+            Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
+            IJsonConfig jsonManager = new ReportCreatorForTests();
+            ReportCreator reportCreator = new ReportCreator(jsonManager);
+            string testOutput = "";
+            dictionaryManager = reportCreator.CreateReport(testOutput);
+
+            Assert.Empty(dictionaryManager);
+        }
+        [Fact]
+        public void CreateReport_TestWrongInput()
+        {
+            Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
+            IJsonConfig jsonManager = new ReportCreatorForTests();
+            ReportCreator reportCreator = new ReportCreator(jsonManager);
+            string testOutput = "62      5       Computer/IsSlow/Why/Google.txt\n";
+            dictionaryManager = reportCreator.CreateReport(testOutput);
+
+            Assert.Empty(dictionaryManager);
         }
     }
     class ReportCreatorForTests : IJsonConfig

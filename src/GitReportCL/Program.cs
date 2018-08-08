@@ -32,7 +32,6 @@ namespace GitReport.CLI
                 }
                 GitDiffProcess processRunner = new GitDiffProcess();
                 string processOutput = processRunner.RunGitDiffProcess(gitArg);
-                Console.WriteLine(processOutput);
                 ReportCreator reportManager = new ReportCreator(new JsonConfig());
                 ShowReport(reportManager.CreateReport(processOutput));
             }
