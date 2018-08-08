@@ -1,6 +1,7 @@
 using GitReport.CLI;
 using System.Collections.Generic;
 using Xunit;
+using GitCounter;
 namespace GitReport.Tests
 {
     public class GitReportTests
