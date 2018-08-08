@@ -31,8 +31,8 @@ namespace GitReport.CLI
                 }
                 GitDiffProcess processRunner = new GitDiffProcess();
                 string processOutput = processRunner.RunGitDiffProcess(gitArg);
-
-                ReportCreator reportManager = new ReportCreator();
+                Console.WriteLine(processOutput);
+                ReportCreator reportManager = new ReportCreator(new JsonConfig());
                 ShowReport(reportManager.CreateReport(processOutput));
             }
 
@@ -42,10 +42,9 @@ namespace GitReport.CLI
                 {
                     Console.WriteLine("Component id: {0}\nCode added in component: " +
                         "{1}\nCode removed in component: {2}\n", dictionaryItem.Key,
-                        dictionaryItem.Value.AdditionCounter, dictionaryItem.Value.DeletionCounter);
+                        dictionaryItem.Value.InsertionCounter, dictionaryItem.Value.DeletionCounter);
                 }
             }
-
         }
     }
 }
