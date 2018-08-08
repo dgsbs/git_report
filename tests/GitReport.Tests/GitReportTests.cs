@@ -6,10 +6,12 @@ namespace GitReport.Tests
 {
     public class GitReportTests
     {
+        GitDiffArguments gitarguments = new GitDiffArguments();
+        Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
+        IJsonConfig jsonManager = new ReportCreatorForTests();
         [Fact]
         public void DatesPathAllValid()
         {
-            var gitarguments = new GitDiffArguments();
             GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
 
             var isValid = validation.AreDatesAndPathValid(new[]
@@ -31,7 +33,6 @@ namespace GitReport.Tests
         [Fact]
         public void DateSinceNotValid()
         {
-            var gitarguments = new GitDiffArguments();
             GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
 
             var isValid = validation.AreDatesAndPathValid(new[]
@@ -45,7 +46,6 @@ namespace GitReport.Tests
         [Fact]
         public void DateBeforeNotValid()
         {
-            var gitarguments = new GitDiffArguments();
             GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
 
             var isValid = validation.AreDatesAndPathValid(new[]
@@ -59,7 +59,6 @@ namespace GitReport.Tests
         [Fact]
         public void DateBeforeMorePrevious()
         {
-            var gitarguments = new GitDiffArguments();
             GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
 
             var isValid = validation.AreDatesAndPathValid(new[]
@@ -73,7 +72,6 @@ namespace GitReport.Tests
         [Fact]
         public void PathNotValid()
         {
-            var gitarguments = new GitDiffArguments();
             GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
 
             var isValid = validation.AreDatesAndPathValid(new[]
@@ -87,8 +85,6 @@ namespace GitReport.Tests
         [Fact]
         public void CreateReport_TestManyLines()
         {
-            Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
-            IJsonConfig jsonManager = new ReportCreatorForTests();
             ReportCreator reportCreator = new ReportCreator(jsonManager);
             string testOutput = "33      3       Star/Wars//Ilike.txt\n" +
                 "1       2       Common/Knowledge/Start/WhenReady.txt\n" +
@@ -103,8 +99,6 @@ namespace GitReport.Tests
         [Fact]
         public void CreateReport_TestSingleLine()
         {
-            Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
-            IJsonConfig jsonManager = new ReportCreatorForTests();
             ReportCreator reportCreator = new ReportCreator(jsonManager);
             string testOutput = "1       1       Common/Knowledge/Start/Abort.txt\n";
             dictionaryManager = reportCreator.CreateReport(testOutput);
@@ -116,8 +110,6 @@ namespace GitReport.Tests
         [Fact]
         public void CreateReport_TestEmptyLine()
         {
-            Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
-            IJsonConfig jsonManager = new ReportCreatorForTests();
             ReportCreator reportCreator = new ReportCreator(jsonManager);
             string testOutput = "";
             dictionaryManager = reportCreator.CreateReport(testOutput);
@@ -127,8 +119,6 @@ namespace GitReport.Tests
         [Fact]
         public void CreateReport_TestWrongInput()
         {
-            Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
-            IJsonConfig jsonManager = new ReportCreatorForTests();
             ReportCreator reportCreator = new ReportCreator(jsonManager);
             string testOutput = "62      5       Computer/IsSlow/Why/Google.txt\n";
             dictionaryManager = reportCreator.CreateReport(testOutput);
