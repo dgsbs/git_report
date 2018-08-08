@@ -1,0 +1,41 @@
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+namespace GitCounter
+{
+    public class JsonConfig : IJsonConfig
+    {
+            public static IConfiguration Configuration { get; set; }
+            Dictionary<string, string> ids = new Dictionary<string, string>();
+            public JsonConfig()
+            {
+                var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("jsconfig.json", optional: true, reloadOnChange: true);
+                Configuration = builder.Build();
+                CreateIdsDictionary();
+            }
+            public bool TryMatchPath(string pathFromProcess, out string finalId)
+            {
+                foreach (var id in ids)
+                {
+                    if (pathFromProcess.Contains(id.Value))
+                    {
+                        finalId = id.Key;
+                        return true;
+                    }
+                }
+                finalId = string.Empty;
+                return false;
+            }
+            private void CreateIdsDictionary()
+            {
+                var pathKeys = Configuration.GetSection("components").GetChildren();
+                char[] charsToTrim = { '*' };
+                foreach (var key in pathKeys)
+                {
+                    ids.Add(key["id"], key["paths"].TrimEnd(charsToTrim));
+                }
+            }
+        }
+    }
