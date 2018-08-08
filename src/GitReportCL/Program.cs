@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GitCounter;
 namespace GitReport.CLI
 {
     class Program
