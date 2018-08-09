@@ -1,5 +1,5 @@
 language: csharp
 mono: none
-dotnet: 2.0.7
+dotnet: 2.1.0
 script:
 - dotnet test
