@@ -1,5 +1,4 @@
 language: csharp
-solution: ./tests/GitReport.Tests/GitReport.Tests.sln
 mono: none
 dotnet: 2.1.201
 script:
