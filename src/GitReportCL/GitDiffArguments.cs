@@ -1,7 +1,7 @@
 ﻿using System;
 namespace GitReport.CLI
 {
-    class GitDiffArguments
+    public class GitDiffArguments
     {
         public string GitPath { get; set;}
         public DateTime DateSince { get; set;}
