@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitReport.CLI", "GitReportC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitReport.Tests", "..\tests\GitReport.Tests\GitReport.Tests.csproj", "{D8724E0C-6B8B-4187-B9BD-FF412C1105EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportCreator", "ReportCreator\ReportCreator.csproj", "{105F69A4-8DF1-4BE9-B435-977E5AAA8F4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportCreator", "ReportCreator\ReportCreator.csproj", "{105F69A4-8DF1-4BE9-B435-977E5AAA8F4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

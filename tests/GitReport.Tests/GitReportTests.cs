@@ -2,17 +2,19 @@ using GitReport.CLI;
 using System.Collections.Generic;
 using Xunit;
 using GitCounter;
+using System;
+using System.IO;
 namespace GitReport.Tests
 {
     public class GitReportTests
     {
-        GitDiffArguments gitarguments = new GitDiffArguments();
+        GitDiffArguments gitargument = new GitDiffArguments();
         Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
         IJsonConfig jsonManager = new ReportCreatorForTests();
         [Fact]
         public void DatesPathAllValid()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
+            IGitValidation validation = new ValidationForTests(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {
@@ -22,18 +24,18 @@ namespace GitReport.Tests
             });
 
             Assert.True(isValid);
-            Assert.Equal(15, gitarguments.DateBefore.Day);
-            Assert.Equal(1, gitarguments.DateBefore.Month);
-            Assert.Equal(2018, gitarguments.DateBefore.Year);
-            Assert.Equal(1, gitarguments.DateSince.Day);
-            Assert.Equal(1, gitarguments.DateSince.Month);
-            Assert.Equal(2018, gitarguments.DateSince.Year);
-            Assert.Contains("git", gitarguments.GitPath);
+            Assert.Equal(15, gitargument.DateBefore.Day);
+            Assert.Equal(1, gitargument.DateBefore.Month);
+            Assert.Equal(2018, gitargument.DateBefore.Year);
+            Assert.Equal(1, gitargument.DateSince.Day);
+            Assert.Equal(1, gitargument.DateSince.Month);
+            Assert.Equal(2018, gitargument.DateSince.Year);
+            Assert.Contains("git", gitargument.GitPath);
         }
         [Fact]
         public void DateSinceNotValid()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
+            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {
@@ -46,7 +48,7 @@ namespace GitReport.Tests
         [Fact]
         public void DateBeforeNotValid()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
+            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {
@@ -59,7 +61,7 @@ namespace GitReport.Tests
         [Fact]
         public void DateBeforeMorePrevious()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
+            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {
@@ -72,7 +74,7 @@ namespace GitReport.Tests
         [Fact]
         public void PathNotValid()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitarguments);
+            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {
@@ -137,6 +139,37 @@ namespace GitReport.Tests
             }
             finalId = string.Empty;
             return false;
+        }
+    }
+    class ValidationForTests : IGitValidation
+    {
+        GitDiffArguments gitArgument = new GitDiffArguments();
+        public ValidationForTests(GitDiffArguments gitArgument)
+        {
+            this.gitArgument = gitArgument;
+        }
+        public bool AreDatesAndPathValid(string[] arguments)
+        {
+            bool sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
+            gitArgument.DateSince = SinceDate;
+
+            bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
+            gitArgument.DateBefore = BeforeDate;
+
+            string localPath = @"C:\git";
+            bool pathExistenceValidator = false;
+
+            if (arguments[2].Contains(localPath))
+            {
+                gitArgument.GitPath = arguments[2];
+            }
+
+            if (!sinceDateValidator || !beforeDateValidator || !pathExistenceValidator ||
+                SinceDate > BeforeDate)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

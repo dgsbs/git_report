@@ -2,7 +2,7 @@
 using System.IO;
 namespace GitReport.CLI
 {
-    public class GitDiffArgumentsValidation                        
+    public class GitDiffArgumentsValidation   : IGitValidation                      
     {
         GitDiffArguments gitArgument = new GitDiffArguments();
         public GitDiffArgumentsValidation(GitDiffArguments gitArgument)
