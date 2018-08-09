@@ -1,7 +1,6 @@
 language: csharp
+solution: ./tests/GitReport.Tests/GitReport.Tests.sln
 mono: none
-install:
-- sudo apt-get install -qq dotnet-sdk-2.1.0
 dotnet: 2.1.0
 script:
 - dotnet restore
