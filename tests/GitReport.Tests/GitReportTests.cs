@@ -41,7 +41,7 @@ namespace GitReport.Tests
                 "11/15/2018",
                 @"C:\git"
             });
-            Assert.True(isValid);
+            Assert.False(isValid);
         }
         [Fact]
         public void DateBeforeNotValid()
@@ -54,7 +54,7 @@ namespace GitReport.Tests
                 "11/15123/2018",
                 @"C:\git"
             });
-            Assert.True(isValid);
+            Assert.False(isValid);
         }
         [Fact]
         public void DateBeforeMorePrevious()
@@ -67,7 +67,7 @@ namespace GitReport.Tests
                 "11/15/2017",
                 @"C:\git"
             });
-            Assert.True(isValid);
+            Assert.False(isValid);
         }
         [Fact]
         public void PathNotValid()
@@ -80,7 +80,7 @@ namespace GitReport.Tests
                 "01/15/2018",
                 @"C:\asdasd"
             });
-            Assert.True(isValid);
+            Assert.False(isValid);
         }
         [Fact]
         public void CreateReport_TestManyLines()
