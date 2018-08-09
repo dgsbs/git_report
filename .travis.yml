@@ -1,8 +1,8 @@
 language: csharp
 solution: GitReport.Tests.sln
 install:
-  - nuget restore GitReport.Tests.sln
+  - nuget restore ./tests/GitReport.Tests/GitReport.Tests.sln
   - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
 script:
-- xbuild /p:Configuration=Release GitReport.Tests.sln
+- xbuild /p:Configuration=Release ./tests/GitReport.Tests/GitReport.Tests.sln
 - mono ./testrunner/xunit.runners.1.9.2/tools/xunit.console.clr4.exe ./tests/GitReport.Tests/bin/Debug/netcoreapp2.0/GitReport.Tests.dll
