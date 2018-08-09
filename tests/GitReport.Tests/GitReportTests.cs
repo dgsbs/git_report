@@ -157,12 +157,7 @@ namespace GitReport.Tests
             gitArgument.DateBefore = BeforeDate;
 
             string localPath = @"C:\git";
-            bool pathExistenceValidator = false;
-
-            if (arguments[2].Contains(localPath))
-            {
-                gitArgument.GitPath = arguments[2];
-            }
+            bool pathExistenceValidator = arguments[2].Contains(localPath);
 
             if (!sinceDateValidator || !beforeDateValidator || !pathExistenceValidator ||
                 SinceDate > BeforeDate)
