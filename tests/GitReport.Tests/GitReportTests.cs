@@ -36,7 +36,7 @@ namespace GitReport.Tests
         [Fact]
         public void DateSinceNotValid()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitargument);
+            IGitValidation validation = new ValidationForTests(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {
@@ -49,7 +49,7 @@ namespace GitReport.Tests
         [Fact]
         public void DateBeforeNotValid()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitargument);
+            IGitValidation validation = new ValidationForTests(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {
@@ -62,7 +62,7 @@ namespace GitReport.Tests
         [Fact]
         public void DateBeforeMorePrevious()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitargument);
+            IGitValidation validation = new ValidationForTests(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {
@@ -75,7 +75,7 @@ namespace GitReport.Tests
         [Fact]
         public void PathNotValid()
         {
-            GitDiffArgumentsValidation validation = new GitDiffArgumentsValidation(gitargument);
+            IGitValidation validation = new ValidationForTests(gitargument);
 
             var isValid = validation.AreDatesAndPathValid(new[]
             {

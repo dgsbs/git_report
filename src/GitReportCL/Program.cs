@@ -22,7 +22,8 @@ namespace GitReport.CLI
 
             void RunGitDiff (string[] arguments, GitDiffArguments gitArg)
             {
-                GitDiffArgumentsValidation gitArgsValidator = new GitDiffArgumentsValidation(gitArgument);
+                GitDiffArgumentsValidation gitArgsValidator = 
+                    new GitDiffArgumentsValidation(gitArgument);
 
                 while (!gitArgsValidator.AreDatesAndPathValid(arguments))
                 {
