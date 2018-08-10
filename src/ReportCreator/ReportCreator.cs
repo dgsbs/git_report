@@ -4,7 +4,8 @@ namespace GitCounter
 {
     public class ReportCreator
     {
-        Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
+        Dictionary<string, ModificationCounters> dictionaryManager = 
+            new Dictionary<string, ModificationCounters>();
 
         IJsonConfig jsonManager;
         public ReportCreator(IJsonConfig jsonConfig)
@@ -14,7 +15,8 @@ namespace GitCounter
         private void CreateReportForComponent(string gitOutputline)
         {
             var componentNewId = string.Empty;
-            string[] separatedGitDiffOutput = gitOutputline.Split(new Char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] separatedGitDiffOutput = gitOutputline.Split(new Char[] 
+                { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (jsonManager.TryMatchPath(separatedGitDiffOutput[2], out componentNewId))
             {
@@ -37,9 +39,9 @@ namespace GitCounter
         }
         public Dictionary<string, ModificationCounters> CreateReport(string gitOutput)
         {
-            string[] LineByLine = gitOutput.Split('\n');
+            string[] lineByLine = gitOutput.Split('\n');
 
-            foreach (var line in LineByLine)
+            foreach (var line in lineByLine)
             {
                 if (!String.IsNullOrWhiteSpace(line))
                 {
@@ -50,9 +52,9 @@ namespace GitCounter
         }
         private int CheckIfStringIsNumber(string numberOfChanges)
         {
-            if (Int32.TryParse(numberOfChanges, out int FormatCheck))
+            if (Int32.TryParse(numberOfChanges, out int formatCheck))
             {
-                return FormatCheck;
+                return formatCheck;
             }
             else
             {

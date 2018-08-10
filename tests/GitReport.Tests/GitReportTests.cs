@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using Xunit;
 using GitCounter;
 using System;
-using System.IO;
 namespace GitReport.Tests
 {
     public class GitReportTests
     {
         GitDiffArguments gitargument = new GitDiffArguments();
-        Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
+        Dictionary<string, ModificationCounters> dictionaryManager = 
+            new Dictionary<string, ModificationCounters>();
         IJsonConfig jsonManager = new ReportCreatorForTests();
+
         [Fact]
         public void DatesPathAllValid()
         {
