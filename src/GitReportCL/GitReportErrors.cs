@@ -1,4 +1,6 @@
 ﻿using System;
+using GitCounter;
+
 namespace GitReport.CLI
 {
     class GitDiffErrors

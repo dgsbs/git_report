@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
-namespace GitReport.CLI
+
+namespace GitCounter
 {
-    class GitDiffProcess
+    public class GitDiffProcess
     {
         private static string partialGitLogCommand = "log --pretty=\"%H\" --before=\"";
         private string RunProcessWithGitCommands(string arg, GitDiffArguments gitArgument)            

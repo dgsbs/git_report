@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+
 namespace GitCounter
 {
     public class JsonConfig : IJsonConfig
@@ -10,8 +11,8 @@ namespace GitCounter
         public JsonConfig()
         {
             var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("jsconfig.json", optional: true, reloadOnChange: true);
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("jsconfig.json", optional: true, reloadOnChange: true);
             Configuration = builder.Build();
             CreateJsonDictionary();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 namespace GitCounter
 {
     public class ReportCreator
@@ -7,18 +8,18 @@ namespace GitCounter
         Dictionary<string, ModificationCounters> dictionaryManager = 
             new Dictionary<string, ModificationCounters>();
 
-        IJsonConfig jsonManager;
+        IJsonConfig jsonConfig;
         public ReportCreator(IJsonConfig jsonConfig)
         {
-            this.jsonManager = jsonConfig;
+            this.jsonConfig = jsonConfig;
         }
         private void CreateReportForComponent(string gitOutputline)
         {
             var componentNewId = string.Empty;
             string[] separatedGitDiffOutput = gitOutputline.Split(new Char[] 
                 { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (jsonManager.TryMatchPath(separatedGitDiffOutput[2], out componentNewId))
+                        
+            if (jsonConfig.TryMatchPath(separatedGitDiffOutput[2], out componentNewId))
             {
                 ModificationCounters counterHandler = new ModificationCounters
                 {
