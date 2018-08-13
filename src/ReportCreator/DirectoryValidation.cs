@@ -4,7 +4,7 @@ namespace GitCounter
 {
     public class DirectoryValidation : IDirectoryValidation
     {
-        public bool CheckIfDirectoryExist(string arg)
+        public bool CheckIfDirectoryIsValid(string arg)
         {
             return Directory.Exists(arg);
         }

@@ -2,6 +2,6 @@
 {
     public interface IDirectoryValidation
     {
-        bool CheckIfDirectoryExist(string arg);
+        bool CheckIfDirectoryIsValid(string arg);
     }
 }

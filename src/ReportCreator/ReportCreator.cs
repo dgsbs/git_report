@@ -13,10 +13,10 @@ namespace GitCounter
         {
             this.jsonConfig = jsonConfig;
         }
-        private void CreateReportForComponent(string gitOutputline)
+        private void CreateReportForComponent(string gitOutputLine)
         {
             var componentNewId = string.Empty;
-            string[] separatedGitDiffOutput = gitOutputline.Split(new Char[] 
+            string[] separatedGitDiffOutput = gitOutputLine.Split(new Char[] 
                 { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         
             if (jsonConfig.TryMatchPath(separatedGitDiffOutput[2], out componentNewId))

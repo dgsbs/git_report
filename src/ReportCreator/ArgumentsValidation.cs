@@ -19,7 +19,7 @@ namespace GitCounter
             bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
             gitArgument.DateBefore = BeforeDate;
 
-            bool pathExistenceValidator = directoryValidation.CheckIfDirectoryExist(arguments[2]);
+            bool pathExistenceValidator = directoryValidation.CheckIfDirectoryIsValid(arguments[2]);
 
             if (pathExistenceValidator)
             {
