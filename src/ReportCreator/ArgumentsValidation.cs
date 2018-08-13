@@ -1,15 +1,17 @@
 ﻿using System;
-using System.IO;
-namespace GitReport.CLI
+
+namespace GitCounter
 {
-    public class GitDiffArgumentsValidation                        
+    public class ArgumentsValidation 
     {
         GitDiffArguments gitArgument = new GitDiffArguments();
-        public GitDiffArgumentsValidation(GitDiffArguments gitArgument)
+        IDirectoryValidation directoryValidation;
+        public ArgumentsValidation(GitDiffArguments gitArgument, IDirectoryValidation directoryValidation)
         {
             this.gitArgument = gitArgument;
+            this.directoryValidation = directoryValidation;
         }
-        public bool AreDatesAndPathValid(string[] arguments)         
+        public bool AreDatesPathValid(string[] arguments)         
         {
             bool sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
             gitArgument.DateSince = SinceDate;
@@ -17,7 +19,7 @@ namespace GitReport.CLI
             bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
             gitArgument.DateBefore = BeforeDate;
 
-            bool pathExistenceValidator = Directory.Exists(arguments[2]);
+            bool pathExistenceValidator = directoryValidation.CheckIfDirectoryIsValid(arguments[2]);
 
             if (pathExistenceValidator)
             {

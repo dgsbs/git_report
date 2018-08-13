@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GitCounter;
+
 namespace GitReport.CLI
 {
     class Program
@@ -22,16 +23,18 @@ namespace GitReport.CLI
 
             void RunGitDiff (string[] arguments, GitDiffArguments gitArg)
             {
-                GitDiffArgumentsValidation gitArgsValidator = new GitDiffArgumentsValidation(gitArgument);
+                IDirectoryValidation directoryValidation = new DirectoryValidation();
+                ArgumentsValidation gitArgsValidator = 
+                    new ArgumentsValidation(gitArgument, directoryValidation);
 
-                while (!gitArgsValidator.AreDatesAndPathValid(arguments))
+                while (!gitArgsValidator.AreDatesPathValid(arguments))
                 {
                     string[] editedArgs = new string[3];
                     errorManager.FixDatePathError(arguments, gitArg, out editedArgs);
                     arguments = editedArgs;
                 }
                 GitDiffProcess processRunner = new GitDiffProcess();
-                string processOutput = processRunner.RunGitDiffProcess(gitArg);
+                string processOutput = processRunner.RunGitDiffProcess(gitArg);                
                 ReportCreator reportManager = new ReportCreator(new JsonConfig());
                 ShowReport(reportManager.CreateReport(processOutput));
             }

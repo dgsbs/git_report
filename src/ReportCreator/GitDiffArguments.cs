@@ -1,5 +1,6 @@
 ﻿using System;
-namespace GitReport.CLI
+
+namespace GitCounter
 {
     public class GitDiffArguments
     {

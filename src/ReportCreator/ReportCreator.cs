@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+
 namespace GitCounter
 {
     public class ReportCreator
     {
-        Dictionary<string, ModificationCounters> dictionaryManager = new Dictionary<string, ModificationCounters>();
+        Dictionary<string, ModificationCounters> dictionaryManager = 
+            new Dictionary<string, ModificationCounters>();
 
-        IJsonConfig jsonManager;
+        IJsonConfig jsonConfig;
         public ReportCreator(IJsonConfig jsonConfig)
         {
-            this.jsonManager = jsonConfig;
+            this.jsonConfig = jsonConfig;
         }
-        private void CreateReportForComponent(string gitOutputline)
+        private void CreateReportForComponent(string gitOutputLine)
         {
             var componentNewId = string.Empty;
-            string[] separatedGitDiffOutput = gitOutputline.Split(new Char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (jsonManager.TryMatchPath(separatedGitDiffOutput[2], out componentNewId))
+            string[] separatedGitDiffOutput = gitOutputLine.Split(new Char[] 
+                { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        
+            if (jsonConfig.TryMatchPath(separatedGitDiffOutput[2], out componentNewId))
             {
                 ModificationCounters counterHandler = new ModificationCounters
                 {
@@ -37,9 +40,9 @@ namespace GitCounter
         }
         public Dictionary<string, ModificationCounters> CreateReport(string gitOutput)
         {
-            string[] LineByLine = gitOutput.Split('\n');
+            string[] lineByLine = gitOutput.Split('\n');
 
-            foreach (var line in LineByLine)
+            foreach (var line in lineByLine)
             {
                 if (!String.IsNullOrWhiteSpace(line))
                 {
@@ -50,9 +53,9 @@ namespace GitCounter
         }
         private int CheckIfStringIsNumber(string numberOfChanges)
         {
-            if (Int32.TryParse(numberOfChanges, out int FormatCheck))
+            if (Int32.TryParse(numberOfChanges, out int formatCheck))
             {
-                return FormatCheck;
+                return formatCheck;
             }
             else
             {
