@@ -12,7 +12,7 @@ namespace GitCounter
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("jsconfig.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("AllComponents.json", optional: true, reloadOnChange: true);
             Configuration = builder.Build();
             CreateJsonDictionary();
         }

@@ -4,9 +4,10 @@ namespace GitCounter
 {
     public class ArgumentsValidation 
     {
-        GitDiffArguments gitArgument = new GitDiffArguments();
+        GitLogArguments gitArgument = new GitLogArguments();
         IDirectoryValidation directoryValidation;
-        public ArgumentsValidation(GitDiffArguments gitArgument, IDirectoryValidation directoryValidation)
+        public ArgumentsValidation(GitLogArguments gitArgument, 
+            IDirectoryValidation directoryValidation)
         {
             this.gitArgument = gitArgument;
             this.directoryValidation = directoryValidation;
@@ -19,11 +20,25 @@ namespace GitCounter
             bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
             gitArgument.DateBefore = BeforeDate;
 
-            bool pathExistenceValidator = directoryValidation.CheckIfDirectoryIsValid(arguments[2]);
+            bool pathExistenceValidator = 
+                directoryValidation.CheckIfDirectoryIsValid(arguments[2]);
 
             if (pathExistenceValidator)
             {
                 gitArgument.GitPath = arguments[2];
+            }
+            else
+            {
+                gitArgument.GitPath = "";
+            }
+
+            if (IsReportInCsv(arguments[3]))
+            {
+                gitArgument.ReportType = 1;
+            }
+            else
+            {
+                gitArgument.ReportType = 0;
             }
 
             if (!sinceDateValidator || !beforeDateValidator || !pathExistenceValidator ||
@@ -32,6 +47,14 @@ namespace GitCounter
                 return false;
             }
             return true;
+        }
+        private bool IsReportInCsv(string reportType)
+        {
+            if (reportType == "csv")
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

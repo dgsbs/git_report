@@ -3,10 +3,15 @@ using GitCounter;
 
 namespace GitReport.CLI
 {
-    class GitDiffErrors
+    class GitLogErrors
     {
+        GitLogArguments gitArgument;
+        public GitLogErrors(GitLogArguments gitArgument)
+        {
+            this.gitArgument = gitArgument;
+        }
         public void FixDatePathError(string[] currentArguments, 
-            GitDiffArguments gitArgument, out string[] newArguments)
+             out string[] newArguments)
         {
             if (gitArgument.DateSince == DateTime.MinValue)
             {
@@ -58,15 +63,16 @@ namespace GitReport.CLI
             }
             return Console.ReadLine();
         }
-        public string[] CreateArgsForGitDiffReport()
+        public void ShowDictionaryEmpty()
         {
-            string[] tempGitArguments = new string[3];
-            Console.WriteLine("You have to pass 3 arguments for GitReport to work. ");
-            tempGitArguments[0] = EnterDate("start-date", false);
-            tempGitArguments[1] = EnterDate("end-date", false);
-            tempGitArguments[2] = EnterPath(false);
-
-            return tempGitArguments;
+            Console.WriteLine("Json configuration file was not found. " +
+                    "Check if it is in application folder.");
+        }
+        private string EnterPresentationMethod()
+        {
+            Console.WriteLine("Enter \"csv\" for csv format output or press enter for" +
+                " default output in console.");
+            return Console.ReadLine();
         }
     }
 }

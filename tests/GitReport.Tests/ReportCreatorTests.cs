@@ -4,10 +4,10 @@ using GitCounter;
 
 namespace GitReport.Tests
 {
-    public class ReportCreatorTests
+    /*public class ReportCreatorTests
     {
-        Dictionary<string, ModificationCounters> dictionaryManager =
-           new Dictionary<string, ModificationCounters>();
+        Dictionary<string, ComponentInfo> dictionaryManager =
+           new Dictionary<string, ComponentInfo>();
         IJsonConfig jsonManager = new ReportCreatorTestsHelper();
 
         [Fact]
@@ -19,7 +19,7 @@ namespace GitReport.Tests
                 "1       1       Common/Knowledge/Start/Abort.txt\n" +
                 "62      5       Computer/IsSlow/Why/Google.txt\n";
 
-            dictionaryManager = reportCreator.CreateReport(testOutput);
+            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
 
             Assert.Equal(2, dictionaryManager["Common.Knowledge"].InsertionCounter);
             Assert.Equal(3, dictionaryManager["Common.Knowledge"].DeletionCounter);
@@ -36,7 +36,7 @@ namespace GitReport.Tests
                 "62      5       Computer/IsSlow/Why/Google.txt\n " +
                 "15      12      Computer/IsSlow/AskGoogle/yahoo.com";
 
-            dictionaryManager = reportCreator.CreateReport(testOutput);
+            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
 
             Assert.Equal(2, dictionaryManager["Common.Knowledge"].InsertionCounter);
             Assert.Equal(3, dictionaryManager["Common.Knowledge"].DeletionCounter);
@@ -51,7 +51,7 @@ namespace GitReport.Tests
             ReportCreator reportCreator = new ReportCreator(jsonManager);
             string testOutput = "1       1       Common/Knowledge/Start/Abort.txt\n";
 
-            dictionaryManager = reportCreator.CreateReport(testOutput);
+            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
 
             Assert.Equal(1, dictionaryManager["Common.Knowledge"].InsertionCounter);
             Assert.Equal(1, dictionaryManager["Common.Knowledge"].DeletionCounter);
@@ -64,7 +64,7 @@ namespace GitReport.Tests
             ReportCreator reportCreator = new ReportCreator(jsonManager);
             string testOutput = "";
 
-            dictionaryManager = reportCreator.CreateReport(testOutput);
+            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
 
             Assert.Empty(dictionaryManager);
         }
@@ -75,9 +75,9 @@ namespace GitReport.Tests
             ReportCreator reportCreator = new ReportCreator(jsonManager);
             string testOutput = "62      5       Computer/IsSlow/Why/Google.txt\n";
 
-            dictionaryManager = reportCreator.CreateReport(testOutput);
+            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
 
             Assert.Empty(dictionaryManager);
         }
-    }
+    }*/
 }

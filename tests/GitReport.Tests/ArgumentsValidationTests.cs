@@ -5,7 +5,7 @@ namespace GitReport.Tests
 {
     public class ArgumentsValidationTests 
     {
-        GitDiffArguments gitArgument = new GitDiffArguments();
+        GitLogArguments gitArgument = new GitLogArguments();
         IDirectoryValidation directoryValidation = 
             new ArgumentsValidationTestsHelper();
         [Fact]
