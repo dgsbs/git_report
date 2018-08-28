@@ -12,11 +12,6 @@ namespace GitCounter
         public int IdNumber { get; set; }
 
         IJsonConfig jsonConfig;
-        public ReportCreator(IJsonConfig jsonConfig)
-        {
-            this.jsonConfig = jsonConfig;
-            this.IdNumber = 0;
-        }
         public ReportCreator(IJsonConfig jsonConfig, Dictionary<string, 
             ComponentData> componentManager,
             Dictionary<string, CommitData> commitManager)
