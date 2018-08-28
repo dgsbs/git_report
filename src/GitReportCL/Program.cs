@@ -20,7 +20,7 @@ namespace GitReport.CLI
 
                 while (!gitArgsValidator.AreDatesPathValid(arguments))
                 {
-                    string[] editedArgs = new string[4];
+                    string[] editedArgs = new string[3];
                     errorManager.FixDatePathError(arguments, out editedArgs);
                     arguments = editedArgs;
                 }

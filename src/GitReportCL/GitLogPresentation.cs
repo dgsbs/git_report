@@ -22,47 +22,12 @@ namespace GitReport.CLI
         }
         public void PresentReport()
         {
-            genarateReport((PresentationMethod)gitArgument.ReportType);
-
-            void genarateReport(PresentationMethod handler)
-            {
-                switch (handler)
-                {
-                    case PresentationMethod.ConsoleDisplay:
-                    {
-                        ShowReport();
-                        break;
-                    }
-                    case PresentationMethod.CsvFile:
-                    {
-                        CreateCsvFile();
-                        break;
-                    }
-                }
-            }
-        }
-        private void ShowReport()
-        {
             if (componentManager.Count == 0)
             {
                 errorManager.ShowDictionaryEmpty();
             }
             var writer = Console.Out;
 
-            PresentReport(writer);
-        }
-        private void CreateCsvFile()
-        {
-            if (componentManager.Count == 0)
-            {
-                errorManager.ShowDictionaryEmpty();
-            }
-            var writer = Console.Out;
-
-            PresentReport(writer);
-        }
-        private void PresentReport(System.IO.TextWriter writer)
-        {
             writer.WriteLine("CommitHash, CommiterName, CommitDate, CommitInfo");
             foreach (var commit in commitManager)
             {
@@ -78,11 +43,6 @@ namespace GitReport.CLI
                     component.Value.ComponentId, component.Value.InsertionCounter,
                     component.Value.DeletionCounter);
             }
-        }
-        private enum PresentationMethod
-        {
-            ConsoleDisplay,
-            CsvFile
         }
     }
 }

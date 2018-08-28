@@ -11,28 +11,26 @@ namespace GitCounter
 
         public string[] ManageGitLogArguments(string[] args)
         {
-            string[] reportArguments = new string[4];
-            DateTime today = DateTime.Today;
-
-            if (args.Length == 3)
+            string[] reportArguments = new string[3];
+            DateTime today = DateTime.Today.AddDays(-70);
+            
+            if (args.Length == 2)
             {
                 reportArguments[0] = FetchDateSince(args[1]);
                 reportArguments[1] = today.ToString();
                 reportArguments[2] = args[0];
-                reportArguments[3] = args[2];
             }
             else
             {
                 reportArguments[0] = FetchDateSince("");
                 reportArguments[1] = today.ToString();
-                reportArguments[2] = string.Empty;
-                reportArguments[3] = string.Empty;
+                reportArguments[2] = "";
             }
 
-            string FetchDateSince(string timePeriod)                                       
+            string FetchDateSince(string timeLength)                                       
             {
-                int numberOfDays = FetchTimePeriod(timePeriod);
-                DateTime dateSince  = DateTime.Today.AddDays(-numberOfDays);
+                int numberOfDays = FetchTimePeriod(timeLength);
+                DateTime dateSince  = DateTime.Today.AddDays(-(70 + numberOfDays));
 
                 return dateSince.ToString();
             }
@@ -48,7 +46,6 @@ namespace GitCounter
                 }
                 return 1;
             }
-
             return reportArguments;
         }
     }

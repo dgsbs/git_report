@@ -31,30 +31,13 @@ namespace GitCounter
             {
                 gitArgument.GitPath = "";
             }
-
-            if (IsReportInCsv(arguments[3]))
-            {
-                gitArgument.ReportType = 1;
-            }
-            else
-            {
-                gitArgument.ReportType = 0;
-            }
-
-            if (!sinceDateValidator || !beforeDateValidator || !pathExistenceValidator ||
-                SinceDate > BeforeDate)
+            
+            if (!sinceDateValidator || !beforeDateValidator ||
+                !pathExistenceValidator  || SinceDate > BeforeDate)  
             {
                 return false;
             }
             return true;
-        }
-        private bool IsReportInCsv(string reportType)
-        {
-            if (reportType == "csv")
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

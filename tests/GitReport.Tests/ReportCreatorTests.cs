@@ -4,80 +4,113 @@ using GitCounter;
 
 namespace GitReport.Tests
 {
-    /*public class ReportCreatorTests
+    public class ReportCreatorTests
     {
-        Dictionary<string, ComponentInfo> dictionaryManager =
-           new Dictionary<string, ComponentInfo>();
+        Dictionary<string, CommitData> commitManager = 
+            new Dictionary<string, CommitData>();
+        Dictionary<string, ComponentData> componentManager = 
+            new Dictionary<string, ComponentData>();
         IJsonConfig jsonManager = new ReportCreatorTestsHelper();
 
         [Fact]
-        public void CreateReport_ManyLinesFromProcess_ComponentEqualsToValuesFromDictionary()
+        public void CreateReport_ManyCommits_NumberOfDictionaryObjectsEqualsNumberIntended()
         {
-            ReportCreator reportCreator = new ReportCreator(jsonManager);
-            string testOutput = "33      3       Star/Wars//Ilike.txt\n" +
+            ReportCreator reportCreator = new ReportCreator(jsonManager, componentManager,
+                commitManager);
+
+            string testOutput = "divideLine\n" +
+                "asdasdasd234234sedfdsf2323aewas23\n" +
+                "Bruce Lee\n" +
+                "05/02/2018\n" +
+                "Changes needed\n" +
+                "smallLine\n" +
+                "33      3       Star/Wars//Ilike.txt\n" +
+                "1       2       Common/Knowledge/Start/WhenReady.txt\n" +
+                "1       1       Common/Knowledge/Start/Abort.txt\n" +
+                "62      5       Computer/IsSlow/Why/Google.txt\n" +
+                "divideLine\n" +
+                "asdasdasd234234sasdedfdsf2323aewas23\n" +
+                "Bruce Leess\n" +
+                "05/02/2019\n" +
+                "Changes neasdeded\n" +
+                "smallLine\n" +
+                "33      3       Star/Wars//Ilike.txt\n" +
                 "1       2       Common/Knowledge/Start/WhenReady.txt\n" +
                 "1       1       Common/Knowledge/Start/Abort.txt\n" +
                 "62      5       Computer/IsSlow/Why/Google.txt\n";
 
-            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
+            reportCreator.CreateFullReport(testOutput);
 
-            Assert.Equal(2, dictionaryManager["Common.Knowledge"].InsertionCounter);
-            Assert.Equal(3, dictionaryManager["Common.Knowledge"].DeletionCounter);
-            Assert.Single(dictionaryManager);
+            Assert.Equal(2, commitManager.Count);
+            Assert.Equal(2, componentManager.Count);
         }
-
         [Fact]
-        public void CreateReport_ManyLinesFromProcess_ManyComponentsEqualsToValuesFromDictionary()
+        public void CreateReport_ManyCommits_NumberOfDictionaryObjectsEqualsEmptyInput()
         {
-            ReportCreator reportCreator = new ReportCreator(jsonManager);
-            string testOutput = "33      3       Star/Wars//Ilike.txt\n" +
-                "1       2       Common/Knowledge/Start/WhenReady.txt\n" +
-                "1       1       Common/Knowledge/Start/Abort.txt\n" +
-                "62      5       Computer/IsSlow/Why/Google.txt\n " +
-                "15      12      Computer/IsSlow/AskGoogle/yahoo.com";
+            ReportCreator reportCreator = new ReportCreator(jsonManager, componentManager,
+                commitManager);
 
-            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
-
-            Assert.Equal(2, dictionaryManager["Common.Knowledge"].InsertionCounter);
-            Assert.Equal(3, dictionaryManager["Common.Knowledge"].DeletionCounter);
-            Assert.Equal(15, dictionaryManager["Computer.Slow"].InsertionCounter);
-            Assert.Equal(12, dictionaryManager["Computer.Slow"].DeletionCounter);
-            Assert.Equal(2,dictionaryManager.Count);
-        }
-
-        [Fact]
-        public void CreateReport_SingleLineFromProcess_ComponentEqualsToValuesFromDictionary()
-        {
-            ReportCreator reportCreator = new ReportCreator(jsonManager);
-            string testOutput = "1       1       Common/Knowledge/Start/Abort.txt\n";
-
-            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
-
-            Assert.Equal(1, dictionaryManager["Common.Knowledge"].InsertionCounter);
-            Assert.Equal(1, dictionaryManager["Common.Knowledge"].DeletionCounter);
-            Assert.Single(dictionaryManager);
-        }
-
-        [Fact]
-        public void CreateReport_EmptyLine_EqualsToEmptyDictionary()
-        {
-            ReportCreator reportCreator = new ReportCreator(jsonManager);
             string testOutput = "";
 
-            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
+            reportCreator.CreateFullReport(testOutput);
 
-            Assert.Empty(dictionaryManager);
+            Assert.Empty(commitManager);
+            Assert.Empty(componentManager);
         }
 
         [Fact]
-        public void CreateReport_WrongInput_EqualsToEmptyDictionary()
+        public void CreateReport_OneCommit_CommitDictionaryDataEqualsDataFromCommit()
         {
-            ReportCreator reportCreator = new ReportCreator(jsonManager);
-            string testOutput = "62      5       Computer/IsSlow/Why/Google.txt\n";
+            ReportCreator reportCreator = new ReportCreator(jsonManager, componentManager,
+                commitManager);
 
-            dictionaryManager = reportCreator.CreateReportSmall(testOutput);
+            string testOutput = "divideLine\n" +
+                "asdasdasd234234sedfdsf2323aewas23\n" +
+                "Bruce Lee\n" +
+                "05/02/2018\n" +
+                "Changes needed\n" +
+                "smallLine\n" +
+                "33      3       Star/Wars//Ilike.txt\n" +
+                "1       2       Common/Knowledge/Start/WhenReady.txt\n" +
+                "1       1       Common/Knowledge/Start/Abort.txt\n" +
+                "62      5       Computer/IsSlow/Why/Google.txt\n";
 
-            Assert.Empty(dictionaryManager);
+            reportCreator.CreateFullReport(testOutput);
+
+            Assert.Equal("Bruce Lee", commitManager
+                ["asdasdasd234234sedfdsf2323aewas23"].CommiterName);
+            Assert.Equal("05/02/2018", commitManager
+                ["asdasdasd234234sedfdsf2323aewas23"].CommitDate);
+            Assert.Equal("Changes needed", commitManager
+                ["asdasdasd234234sedfdsf2323aewas23"].CommitMessage);
+            Assert.True(commitManager.ContainsKey("asdasdasd234234sedfdsf2323aewas23"));
         }
-    }*/
+
+        [Fact]
+        public void CreateReport_ManyCommits_ComponentDictionaryDataEqualsDataFromCommit()
+        {
+            ReportCreator reportCreator = new ReportCreator(jsonManager, componentManager,
+                commitManager);
+
+            string testOutput = "divideLine\n" +
+                "asdasdasd234234sedfdsf2323aewas23\n" +
+                "Bruce Lee\n" +
+                "05/02/2018\n" +
+                "Changes needed\n" +
+                "smallLine\n" +
+                "33      3       Star/Wars//Ilike.txt\n" +
+                "1       2       Common/Knowledge/Start/WhenReady.txt\n" +
+                "1       1       Common/Knowledge/Start/Abort.txt\n" +
+                "62      5       Computer/IsSlow/Why/Google.txt\n";
+
+            reportCreator.CreateFullReport(testOutput);
+
+            Assert.Equal(2, componentManager
+                ["asdasdasd234234sedfdsf2323aewas23Common.Knowledge"].InsertionCounter);
+            Assert.Equal(3, componentManager
+                ["asdasdasd234234sedfdsf2323aewas23Common.Knowledge"].DeletionCounter);
+            Assert.True(componentManager.ContainsKey
+                ("asdasdasd234234sedfdsf2323aewas23Common.Knowledge"));
+        }
+    }
 }

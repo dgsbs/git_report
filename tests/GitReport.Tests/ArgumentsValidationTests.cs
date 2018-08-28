@@ -7,7 +7,7 @@ namespace GitReport.Tests
     {
         GitLogArguments gitArgument = new GitLogArguments();
         IDirectoryValidation directoryValidation = 
-            new ArgumentsValidationTestsHelper();
+            new DirectoryValidationTestsHelper();
         [Fact]
         public void AreDatesPathValid_ArgumentsInOrder_ValidResult()
         {
@@ -18,7 +18,7 @@ namespace GitReport.Tests
             {
                 "01/01/2018",
                 "01/15/2018",
-                @"C:\git"                
+                @"C:\git",
             });
 
             Assert.True(isValid);
@@ -34,14 +34,14 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_SinceDateWrongFormat_InvalidResult()
         {
-            ArgumentsValidation validation = 
+            ArgumentsValidation validation =
                 new ArgumentsValidation(gitArgument, directoryValidation);
 
             var isValid = validation.AreDatesPathValid(new[]
             {
                 "01/012/2018",
                 "11/15/2018",
-                @"C:\git"
+                @"C:\git",
             });
 
             Assert.False(isValid);
@@ -50,14 +50,14 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_BeforeDateWrongFormat_InvalidResult()
         {
-            ArgumentsValidation validation = 
+            ArgumentsValidation validation =
                 new ArgumentsValidation(gitArgument, directoryValidation);
 
             var isValid = validation.AreDatesPathValid(new[]
             {
                 "01/01/2018",
                 "11/15123/2018",
-                @"C:\git"
+                @"C:\git",
             });
 
             Assert.False(isValid);
@@ -66,14 +66,14 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_BeforeDateMorePrevious_InvalidResult()
         {
-            ArgumentsValidation validation = 
+            ArgumentsValidation validation =
                 new ArgumentsValidation(gitArgument, directoryValidation);
 
             var isValid = validation.AreDatesPathValid(new[]
             {
                 "01/01/2018",
                 "11/15/2017",
-                @"C:\git"
+                @"C:\git",
             });
 
             Assert.False(isValid);
@@ -82,14 +82,14 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_WrongPathFromInput_InvalidResult()
         {
-            ArgumentsValidation validation = 
+            ArgumentsValidation validation =
                 new ArgumentsValidation(gitArgument, directoryValidation);
 
             var isValid = validation.AreDatesPathValid(new[]
             {
                 "01/01/2018",
                 "01/15/2018",
-                @"C:\asdasd"
+                @"C:\asdasdasd",
             });
 
             Assert.False(isValid);

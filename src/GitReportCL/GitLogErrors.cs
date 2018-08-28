@@ -68,11 +68,5 @@ namespace GitReport.CLI
             Console.WriteLine("Json configuration file was not found. " +
                     "Check if it is in application folder.");
         }
-        private string EnterPresentationMethod()
-        {
-            Console.WriteLine("Enter \"csv\" for csv format output or press enter for" +
-                " default output in console.");
-            return Console.ReadLine();
-        }
     }
 }

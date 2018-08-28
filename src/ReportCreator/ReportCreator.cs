@@ -18,11 +18,11 @@ namespace GitCounter
             this.IdNumber = 0;
         }
         public ReportCreator(IJsonConfig jsonConfig, Dictionary<string, 
-            ComponentData> dictionaryManager,
-            Dictionary<string, CommitData> commitInfoManager)
+            ComponentData> componentManager,
+            Dictionary<string, CommitData> commitManager)
         {
-            this.componentManager = dictionaryManager;
-            this.commitManager = commitInfoManager;
+            this.componentManager = componentManager;
+            this.commitManager = commitManager;
             this.temporaryComponentManager = new Dictionary<int, ComponentData>();
             this.jsonConfig = jsonConfig;
             this.IdNumber = 0;
@@ -44,7 +44,7 @@ namespace GitCounter
         {
             string[] separator = new[] { "smallLine" };
             string[] commitDivided = fullCommit.Split(separator,
-                StringSplitOptions.RemoveEmptyEntries);
+            StringSplitOptions.RemoveEmptyEntries);
 
             CreateCommitComponentData(commitDivided[0], commitDivided[1]);
         }
@@ -59,9 +59,8 @@ namespace GitCounter
                 CommitDate = lineByLine[3],
                 CommitMessage = lineByLine[4]
             };
-
-            commitManager.Add(commitHash, data);
             CreateReportAllComoponents(commitHash, componentData);
+            commitManager.Add(commitHash, data);
         }
         private void CreateReportAllComoponents(string hash, string componentInfo)
         {
