@@ -32,14 +32,14 @@ namespace GitReport.CLI
             foreach (var commit in commitManager)
             {
                 string date = DateTime.Parse(commit.Value.CommitDate).ToShortDateString();
-                writer.WriteLine("{0},{1},{2},{3}", commit.Key, commit.Value.CommiterName,
+                writer.WriteLine("{0},\t{1},\t{2},\t{3}", commit.Key, commit.Value.CommiterName,
                     date, commit.Value.CommitMessage);
             }
 
             writer.WriteLine("\n\n\nCommitHash, ComponentId, Insertion, Deletion");
             foreach (var component in componentManager)
             {
-                writer.WriteLine("{0},{1},{2},{3}", component.Value.ComponentHash,
+                writer.WriteLine("{0},\t{1},\t{2},\t{3}", component.Value.ComponentHash,
                     component.Value.ComponentId, component.Value.InsertionCounter,
                     component.Value.DeletionCounter);
             }

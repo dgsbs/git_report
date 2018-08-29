@@ -7,12 +7,11 @@ namespace GitCounter
         public string GitPath { get; set;}
         public DateTime DateSince { get; set;}
         public DateTime DateBefore { get; set;}
-        public int ReportType { get; set;}
 
         public string[] ManageGitLogArguments(string[] args)
         {
             string[] reportArguments = new string[3];
-            DateTime today = DateTime.Today;
+            DateTime today = DateTime.Today.AddDays(-70);
             
             if (args.Length == 2)
             {
@@ -30,7 +29,7 @@ namespace GitCounter
             string FetchDateSince(string timeLength)                                       
             {
                 int numberOfDays = FetchTimePeriod(timeLength);
-                DateTime dateSince  = DateTime.Today.AddDays(-numberOfDays);
+                DateTime dateSince  = DateTime.Today.AddDays(-(70 + numberOfDays));
 
                 return dateSince.ToString();
             }
