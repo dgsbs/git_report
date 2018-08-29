@@ -7,7 +7,7 @@ namespace GitReport.Tests
     {
         GitLogArguments gitArgument = new GitLogArguments();
         IDirectoryValidation directoryValidation = 
-            new DirectoryValidationTestsHelper();
+            new ArgumentsValidationTestsHelper();
         [Fact]
         public void AreDatesPathValid_ArgumentsInOrder_ValidResult()
         {

@@ -9,9 +9,9 @@ namespace GitReport.CLI
         {
             GitLogArguments gitArgument = new GitLogArguments();
             string[] newArgs = gitArgument.ManageGitLogArguments(args);
-            RunGitDiff(newArgs, gitArgument);
+            RunGitLog(newArgs, gitArgument);
 
-            void RunGitDiff (string[] arguments, GitLogArguments gitArg)
+            void RunGitLog (string[] arguments, GitLogArguments gitArg)
             {
                 IDirectoryValidation directoryValidation = new DirectoryValidation();
                 GitLogErrors errorManager = new GitLogErrors(gitArgument);

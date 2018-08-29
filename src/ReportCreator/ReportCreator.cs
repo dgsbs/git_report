@@ -12,8 +12,8 @@ namespace GitCounter
         public int IdNumber { get; set; }
 
         IJsonConfig jsonConfig;
-        public ReportCreator(IJsonConfig jsonConfig, Dictionary<string, 
-            ComponentData> componentManager,
+        public ReportCreator(IJsonConfig jsonConfig, 
+            Dictionary<string, ComponentData> componentManager,
             Dictionary<string, CommitData> commitManager)
         {
             this.componentManager = componentManager;
@@ -37,9 +37,9 @@ namespace GitCounter
         }
         private void DivideCommit(string fullCommit)
         {
-            string[] separator = new[] { "smallLine" };
-            string[] commitDivided = fullCommit.Split(separator,
-            StringSplitOptions.RemoveEmptyEntries);
+            string[] commitSeparator = new[] { "smallLine" };
+            string[] commitDivided = 
+                fullCommit.Split(commitSeparator,StringSplitOptions.RemoveEmptyEntries);
 
             CreateCommitComponentData(commitDivided[0], commitDivided[1]);
         }

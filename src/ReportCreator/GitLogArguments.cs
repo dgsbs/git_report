@@ -11,7 +11,7 @@ namespace GitCounter
         public string[] ManageGitLogArguments(string[] args)
         {
             string[] reportArguments = new string[3];
-            DateTime today = DateTime.Today.AddDays(-70);
+            DateTime today = DateTime.Today;
             
             if (args.Length == 2)
             {
@@ -21,7 +21,7 @@ namespace GitCounter
             }
             else
             {
-                reportArguments[0] = FetchDateSince("");
+                reportArguments[0] = FetchDateSince("oneDay");
                 reportArguments[1] = today.ToString();
                 reportArguments[2] = "";
             }
@@ -29,7 +29,16 @@ namespace GitCounter
             string FetchDateSince(string timeLength)                                       
             {
                 int numberOfDays = FetchTimePeriod(timeLength);
-                DateTime dateSince  = DateTime.Today.AddDays(-(70 + numberOfDays));
+                DateTime dateSince;
+
+                if (DateTime.Now.Hour < 10 && timeLength == "oneDay")
+                {
+                    dateSince = DateTime.Today.AddDays(-(numberOfDays + 1));
+                }
+                else
+                {
+                    dateSince = DateTime.Today.AddDays(-(numberOfDays));
+                }
 
                 return dateSince.ToString();
             }
