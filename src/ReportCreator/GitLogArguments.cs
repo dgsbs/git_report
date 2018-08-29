@@ -23,7 +23,7 @@ namespace GitCounter
             {
                 reportArguments[0] = FetchDateSince("oneDay");
                 reportArguments[1] = today.ToString();
-                reportArguments[2] = "";
+                reportArguments[2] = "";        
             }
 
             string FetchDateSince(string timeLength)                                       
@@ -37,7 +37,7 @@ namespace GitCounter
                 }
                 else
                 {
-                    dateSince = DateTime.Today.AddDays(-(numberOfDays));
+                    dateSince = DateTime.Today.AddDays(-numberOfDays);
                 }
 
                 return dateSince.ToString();

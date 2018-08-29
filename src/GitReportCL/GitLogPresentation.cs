@@ -13,12 +13,13 @@ namespace GitReport.CLI
 
         public GitLogPresentation(Dictionary<string, ComponentData> componentManager,
             Dictionary<string, CommitData> commitManager, 
-            GitLogArguments gitArgument)
+            GitLogArguments gitArgument,
+            GitLogErrors errorManager)
         {
             this.commitManager = commitManager;
             this.componentManager = componentManager;
             this.gitArgument = gitArgument;
-            errorManager = new GitLogErrors(gitArgument);
+            this.errorManager = errorManager;            
         }
         public void PresentReport()
         {
