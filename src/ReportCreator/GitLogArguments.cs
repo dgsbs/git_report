@@ -25,36 +25,34 @@ namespace GitCounter
                 reportArguments[1] = today.ToString();
                 reportArguments[2] = "";        
             }
-
-            string FetchDateSince(string timeLength)                                       
-            {
-                int numberOfDays = FetchTimePeriod(timeLength);
-                DateTime dateSince;
-
-                if (DateTime.Now.Hour < 10 && timeLength == "oneDay")
-                {
-                    dateSince = DateTime.Today.AddDays(-(numberOfDays + 1));
-                }
-                else
-                {
-                    dateSince = DateTime.Today.AddDays(-numberOfDays);
-                }
-
-                return dateSince.ToString();
-            }
-            int FetchTimePeriod(string period)
-            {
-                if (period == "oneWeek")
-                {
-                    return 7;
-                }
-                if (period == "fourWeeks")
-                {
-                    return 28;
-                }
-                return 1;
-            }
             return reportArguments;
+        }
+        private string FetchDateSince(string timePeriod)
+        {
+            int numberOfDays = FetchNumberOfDays(timePeriod);
+            DateTime dateSince;
+
+            if (DateTime.Now.Hour < 10 && timePeriod == "oneDay")
+            {
+                dateSince = DateTime.Today.AddDays(-(numberOfDays + 1));
+            }
+            else
+            {
+                dateSince = DateTime.Today.AddDays(-numberOfDays);
+            }
+            return dateSince.ToString();
+        }
+        private int FetchNumberOfDays(string timePeriod)
+        {
+            if (timePeriod == "oneWeek")
+            {
+                return 7;
+            }
+            if (timePeriod == "fourWeeks")
+            {
+                return 28;
+            }
+            return 1;
         }
     }
 }

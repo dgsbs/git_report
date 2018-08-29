@@ -27,7 +27,7 @@ namespace GitReport.CLI
                 gitArgument.DateSince != DateTime.MinValue &&
                 gitArgument.DateBefore != DateTime.MinValue)
             {
-                Console.WriteLine("The end-date was more previous then start - date.");
+                Console.WriteLine("The end-date was more previous then start-date.");
                 currentArguments[0] = EnterDate("start-date", false);
                 currentArguments[1] = EnterDate("end-date", false);
             }

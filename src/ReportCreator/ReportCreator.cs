@@ -8,10 +8,9 @@ namespace GitCounter
         Dictionary<int, ComponentData> temporaryComponentManager;
         Dictionary<string, CommitData> commitManager;
         Dictionary<string, ComponentData> componentManager;
-
+        IJsonConfig jsonConfig;
         public int IdNumber { get; set; }
 
-        IJsonConfig jsonConfig;
         public ReportCreator(IJsonConfig jsonConfig, 
             Dictionary<string, ComponentData> componentManager,
             Dictionary<string, CommitData> commitManager)
