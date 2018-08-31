@@ -1,4 +1,4 @@
-﻿namespace GitCounter
+﻿namespace ReportCreator
 {
     public interface IDirectoryValidation
     {

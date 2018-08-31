@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GitCounter
+namespace ReportCreator
 {
-    public class ReportCreator
+    public class GitReportCreator
     {
-        Dictionary<int, ComponentData> temporaryComponentManager;
-        Dictionary<string, CommitData> commitManager;
-        Dictionary<string, ComponentData> componentManager;
+        public Dictionary<string, CommitData> CommitDictionary { get; private set; }
+        public Dictionary<string, ComponentData> ComponentDictionary { get; private set; }
+        private Dictionary<int, ComponentData> TemporaryContainer { get; set; }
         IJsonConfig jsonConfig;
-        public int IdNumber { get; set; }
-
-        public ReportCreator(IJsonConfig jsonConfig, 
-            Dictionary<string, ComponentData> componentManager,
-            Dictionary<string, CommitData> commitManager)
+        private int IdNumber { get; set; }
+        public GitReportCreator(IJsonConfig jsonConfig, 
+            Dictionary<string, ComponentData> componentDictionary,
+            Dictionary<string, CommitData> commitDictionary)
         {
-            this.componentManager = componentManager;
-            this.commitManager = commitManager;
-            this.temporaryComponentManager = new Dictionary<int, ComponentData>();
+            this.ComponentDictionary = componentDictionary;
+            this.CommitDictionary = commitDictionary;
+            this.TemporaryContainer = new Dictionary<int, ComponentData>();
             this.jsonConfig = jsonConfig;
             this.IdNumber = 0;
         }
         public void CreateFullReport(string gitOutput)
         {
-            string[] outputSeparator = new[] { "divideLine" };
+            string[] outputSeparator = new[]
+                { this.jsonConfig.FetchSepatator(true).Trim() };
             string[] commitByCommit = gitOutput.Split(outputSeparator,
                 StringSplitOptions.RemoveEmptyEntries);
 
@@ -31,12 +31,14 @@ namespace GitCounter
             {
                 DivideCommit(commit);
             }
-
+            
             CreateFinalComponentList();
         }
         private void DivideCommit(string fullCommit)
         {
-            string[] commitSeparator = new[] { "smallLine" };
+            string[] commitSeparator = new[]
+                { this.jsonConfig.FetchSepatator(false) };
+
             string[] commitDivided = 
                 fullCommit.Split(commitSeparator,StringSplitOptions.RemoveEmptyEntries);
 
@@ -45,18 +47,18 @@ namespace GitCounter
         private void CreateCommitComponentData(string commitData, string componentData)
         {
             string[] lineByLine = commitData.Split('\n');
-            string commitHash = lineByLine[1];
+            string commitHash = lineByLine[1].Trim();
 
             CommitData data = new CommitData
             {
-                CommiterName = lineByLine[2],
-                CommitDate = lineByLine[3],
-                CommitMessage = lineByLine[4]
+                CommiterName = lineByLine[2].Trim(),
+                CommitDate = lineByLine[3].Trim(),
+                CommitMessage = lineByLine[4].Trim()
             };
-            CreateReportAllComoponents(commitHash, componentData);
-            commitManager.Add(commitHash, data);
+            CreateReportAllComponents(commitHash, componentData);
+            this.CommitDictionary.Add(commitHash, data);
         }
-        private void CreateReportAllComoponents(string hash, string componentInfo)
+        private void CreateReportAllComponents(string hash, string componentInfo)
         {
             string[] lineByLine = componentInfo.Split('\n');
 
@@ -64,7 +66,7 @@ namespace GitCounter
             {
                 if (!String.IsNullOrWhiteSpace(line))
                 {
-                    CreateReportOneComponent(line, hash);
+                    CreateReportOneComponent(line.Trim(), hash);
                 }
             }
         }
@@ -72,9 +74,10 @@ namespace GitCounter
         {
             var componentNewId = string.Empty;
             string[] separatedGitDiffOutput = 
-                gitOutputLine.Split(new Char[] {'\t',' '}, StringSplitOptions.RemoveEmptyEntries);
+                gitOutputLine.Split(new Char[] {'\t',' '}, 
+                StringSplitOptions.RemoveEmptyEntries);
                         
-            if (jsonConfig.TryMatchPath(separatedGitDiffOutput[2], out componentNewId))
+            if (this.jsonConfig.TryMatchPath(separatedGitDiffOutput[2], out componentNewId))
             {
                 ComponentData componentHandler = new ComponentData
                 {
@@ -83,35 +86,35 @@ namespace GitCounter
                     InsertionCounter = CheckIfStringIsNumber(separatedGitDiffOutput[0]),
                     DeletionCounter = CheckIfStringIsNumber(separatedGitDiffOutput[1])
                 };
-                temporaryComponentManager.Add(IdNumber, componentHandler);
+                this.TemporaryContainer.Add(this.IdNumber, componentHandler);
             }
-            IdNumber++;
+            this.IdNumber++;
         }
         private void CreateFinalComponentList()
         {
             string newKey = string.Empty;
 
-            foreach (var temporaryComponent in temporaryComponentManager)
+            foreach (var temporaryComponent in this.TemporaryContainer)
             {
                 if (TryMatchComponent(temporaryComponent, out newKey))
                 {
-                    componentManager[newKey].InsertionCounter +=
+                    ComponentDictionary[newKey].InsertionCounter +=
                         temporaryComponent.Value.InsertionCounter;
-                    componentManager[newKey].DeletionCounter +=
+                    ComponentDictionary[newKey].DeletionCounter +=
                         temporaryComponent.Value.DeletionCounter;
                 }
                 else
                 {
                     newKey = temporaryComponent.Value.ComponentHash + 
                         temporaryComponent.Value.ComponentId;
-                    componentManager.Add(newKey, temporaryComponent.Value);
+                    ComponentDictionary.Add(newKey, temporaryComponent.Value);
                 }
             }
         }
         private bool TryMatchComponent(KeyValuePair<int, ComponentData> tempItem,
             out string newKey)
         {
-            foreach (var dictionaryItem in componentManager)
+            foreach (var dictionaryItem in ComponentDictionary)
             {
                 if (dictionaryItem.Value.ComponentHash == tempItem.Value.ComponentHash &&
                     dictionaryItem.Value.ComponentId == tempItem.Value.ComponentId)

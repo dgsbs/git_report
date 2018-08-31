@@ -1,4 +1,4 @@
-﻿using GitCounter;
+﻿using ReportCreator;
 
 namespace GitReport.Tests
 {
@@ -19,6 +19,14 @@ namespace GitReport.Tests
 
             finalId = string.Empty;
             return false;
+        }
+        public string FetchSepatator(bool whichSepatator)
+        {
+            if (whichSepatator)
+            {
+                return "divideLine";
+            }
+            return "smallLine";
         }
     }
 }

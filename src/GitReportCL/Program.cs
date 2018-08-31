@@ -1,4 +1,4 @@
-﻿using GitCounter;
+﻿using ReportCreator;
 using System.Collections.Generic;
 
 namespace GitReport.CLI
@@ -7,36 +7,31 @@ namespace GitReport.CLI
     {
         static void Main(string[] args)
         {
-            GitLogArguments gitArgument = new GitLogArguments();
-            string[] newArgs = gitArgument.ManageGitLogArguments(args);
+            GitArguments gitArgument = new GitArguments();
+            string[] newArgs = gitArgument.ManageGitArguments(args);
 
-            IDirectoryValidation directoryValidation = new DirectoryValidation();
-            GitLogErrors errorManager = new GitLogErrors(gitArgument);      
+            GitLogErrors errorHandler = new GitLogErrors(gitArgument);      
             ArgumentsValidation gitArgsValidator =
-                new ArgumentsValidation(gitArgument, directoryValidation);
+                new ArgumentsValidation(gitArgument, new DirectoryValidation());
 
             while (!gitArgsValidator.AreDatesPathValid(newArgs))
             {
                 string[] editedArgs = new string[3];
-                errorManager.FixDatePathError(newArgs, out editedArgs);
+                errorHandler.FixDatePathError(newArgs, out editedArgs);
                 newArgs = editedArgs;
             }
 
-            Dictionary<string, ComponentData> componentManager =
-                new Dictionary<string, ComponentData>();
+            IJsonConfig jsonConfig = new JsonConfig();
+            GitProcess processRunner = new GitProcess(gitArgument, jsonConfig);
+            string processOutput = processRunner.RunGitLogProcess();
 
-            Dictionary<string, CommitData> commitManager =
-                new Dictionary<string, CommitData>();
-
-            GitProcess processRunner = new GitProcess();
-            string processOutput = processRunner.RunGitLogProcess(gitArgument);
-
-            ReportCreator reportManager = new ReportCreator(new JsonConfig(),
-                componentManager, commitManager);
-            reportManager.CreateFullReport(processOutput);
+            GitReportCreator reportHandler =
+                new GitReportCreator(jsonConfig, new Dictionary<string,
+                ComponentData>(), new Dictionary<string, CommitData>()); 
+            reportHandler.CreateFullReport(processOutput);
 
             GitLogPresentation reportPresentation =
-                new GitLogPresentation(componentManager, commitManager, gitArgument, errorManager);
+                new GitLogPresentation(reportHandler);
             reportPresentation.PresentReport();
         }
     }

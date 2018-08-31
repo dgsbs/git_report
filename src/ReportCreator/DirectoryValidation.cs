@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace GitCounter
+namespace ReportCreator
 {
     public class DirectoryValidation : IDirectoryValidation
     {

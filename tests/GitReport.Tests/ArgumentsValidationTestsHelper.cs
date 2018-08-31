@@ -1,4 +1,4 @@
-﻿using GitCounter;
+﻿using ReportCreator;
 
 namespace GitReport.Tests
 {

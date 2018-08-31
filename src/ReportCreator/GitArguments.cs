@@ -1,17 +1,17 @@
 ﻿using System;
 
-namespace GitCounter
+namespace ReportCreator
 {
-    public class GitLogArguments
+    public class GitArguments
     {
         public string GitPath { get; set;}
         public DateTime DateSince { get; set;}
         public DateTime DateBefore { get; set;}
 
-        public string[] ManageGitLogArguments(string[] args)
+        public string[] ManageGitArguments(string[] args)
         {
             string[] reportArguments = new string[3];
-            DateTime today = DateTime.Today;
+            DateTime today = DateTime.Today.AddDays(-70);
             
             if (args.Length == 2)
             {
@@ -34,11 +34,11 @@ namespace GitCounter
 
             if (DateTime.Now.Hour < 10 && timePeriod == "oneDay")
             {
-                dateSince = DateTime.Today.AddDays(-(numberOfDays + 1));
+                dateSince = DateTime.Today.AddDays(-(70 + numberOfDays + 1));
             }
             else
             {
-                dateSince = DateTime.Today.AddDays(-numberOfDays);
+                dateSince = DateTime.Today.AddDays(-(70 + numberOfDays));
             }
             return dateSince.ToString();
         }

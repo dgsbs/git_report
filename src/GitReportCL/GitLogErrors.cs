@@ -1,46 +1,46 @@
 ﻿using System;
-using GitCounter;
+using ReportCreator;
 
 namespace GitReport.CLI
 {
     class GitLogErrors
     {
-        GitLogArguments gitArgument;
-        public GitLogErrors(GitLogArguments gitArgument)
+        GitArguments gitArgument;
+        public GitLogErrors(GitArguments gitArgument)
         {
             this.gitArgument = gitArgument;
         }
         public void FixDatePathError(string[] currentArguments, 
              out string[] newArguments)
         {
-            if (gitArgument.DateSince == DateTime.MinValue)
+            if (this.gitArgument.DateSince == DateTime.MinValue)
             {
                 currentArguments[0] = EnterDate("start-date", true);
             }
 
-            if (gitArgument.DateBefore == DateTime.MinValue)
+            if (this.gitArgument.DateBefore == DateTime.MinValue)
             {
                 currentArguments[1] = EnterDate("end-date", true);
             }
 
-            if (gitArgument.DateSince > gitArgument.DateBefore &&
-                gitArgument.DateSince != DateTime.MinValue &&
-                gitArgument.DateBefore != DateTime.MinValue)
+            if (this.gitArgument.DateSince > this.gitArgument.DateBefore &&
+                this.gitArgument.DateSince != DateTime.MinValue &&
+                this.gitArgument.DateBefore != DateTime.MinValue)
             {
                 Console.WriteLine("The end-date was more previous then start-date.");
                 currentArguments[0] = EnterDate("start-date", false);
                 currentArguments[1] = EnterDate("end-date", false);
             }
 
-            if (gitArgument.GitPath == string.Empty)
+            if (this.gitArgument.GitPath == string.Empty)
             {
                 currentArguments[2] = EnterPath(true);
             }
             newArguments = currentArguments;
         }
-        private string EnterDate(string whichDate, bool flag)
+        private string EnterDate(string whichDate, bool messageTypeFlag)
         {
-            if (flag)
+            if (messageTypeFlag)
             {
                 Console.WriteLine("Format that you used while entering the " + whichDate +
                 " was wrong.");
@@ -49,9 +49,9 @@ namespace GitReport.CLI
 
             return Console.ReadLine();
         }
-        private string EnterPath(bool flag)
+        private string EnterPath(bool messageTypeFlag)
         {
-            if (flag)
+            if (messageTypeFlag)
             {
                 Console.WriteLine("There is something wrong with the path you have entered." +
                     " Be sure to use folder connected to GitHub. Please try again.");
@@ -62,11 +62,6 @@ namespace GitReport.CLI
                     "connected to GitHub. Please enter your the path.");
             }
             return Console.ReadLine();
-        }
-        public void ShowDictionaryEmpty()
-        {
-            Console.WriteLine("Json configuration file was not found. " +
-                    "Check if it is in application folder.");
         }
     }
 }

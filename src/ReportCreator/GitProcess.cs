@@ -1,18 +1,30 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
-namespace GitCounter
+namespace ReportCreator
 {
     public class GitProcess
     {
-        private static string renameLimit = "config diff.renameLimit 999999";
-        private string RunGitProcess(string arg, GitLogArguments gitArgument)            
+        private const string renameLimit = "config diff.renameLimit 999999";
+        private String GitPath { get; set; }
+        private DateTime DateSince { get; set; }
+        private DateTime DateBefore { get; set; }
+        IJsonConfig jsonConfig;
+        public GitProcess (GitArguments gitArgument, IJsonConfig JsonConfig)
+        {
+            this.GitPath = gitArgument.GitPath;
+            this.DateSince = gitArgument.DateSince;
+            this.DateBefore = gitArgument.DateBefore;
+            this.jsonConfig = JsonConfig;
+        }
+        private string RunGitProcess(string processArguments)            
         {
             ProcessStartInfo startInfo = new ProcessStartInfo("git")
             {
-                WorkingDirectory = gitArgument.GitPath,
+                WorkingDirectory = GitPath,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                Arguments = arg
+                Arguments = processArguments
             };
 
             var wholeStdOut = string.Empty;
@@ -22,35 +34,32 @@ namespace GitCounter
                 process.StartInfo = startInfo;
                 process.Start();
                 
-                if (arg.Contains("log"))
+                while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
                 {
-                    while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
+                    wholeStdOut += stdOneLine;
+                    wholeStdOut += "\n";
+                    if (wholeStdOut.Length >= int.MaxValue)
                     {
-                        wholeStdOut += stdOneLine;
-                        wholeStdOut += "\n";
-                        if (wholeStdOut.Length >= int.MaxValue)
-                        {
-                            break;
-                        }
+                        break;
                     }
-                    return wholeStdOut;
                 }
-                return string.Empty;
+                return wholeStdOut;
             }
         }
-        private string BuildGitLogCommand(GitLogArguments gitArgument)
+        private string BuildGitLogCommand()
         {
-            return $"log --pretty=\"divideLine%n%H%n%cn%n%ci%n%s%nsmallLine\" --numstat " +
-                $"--since=\"{ gitArgument.DateSince.ToShortDateString()} 24:00\"" +
-                $" --before=\"{gitArgument.DateBefore.ToShortDateString()} 24:00\"";
+            return $"log --pretty=\"{jsonConfig.FetchSepatator(true)}%n%H%n%cn%n%ci%n%s%n" +
+                $"{jsonConfig.FetchSepatator(false)}\" --numstat " +
+                $"--since=\"{DateSince.ToShortDateString()} 24:00\"" +
+                $" --before=\"{DateBefore.ToShortDateString()} 24:00\"";
         }
-        public string RunGitLogProcess(GitLogArguments gitArgument)
+        public string RunGitLogProcess()
         {
-            RunGitProcess(renameLimit,gitArgument);
+            RunGitProcess(renameLimit);
 
-            string gitLogArgument = BuildGitLogCommand(gitArgument);
+            string gitLogArgument = BuildGitLogCommand();
 
-            return RunGitProcess(gitLogArgument,gitArgument);
+            return RunGitProcess(gitLogArgument);
         }
     }
 }

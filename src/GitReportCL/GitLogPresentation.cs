@@ -1,36 +1,26 @@
-﻿using GitCounter;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using ReportCreator;
 
 namespace GitReport.CLI
 {
     class GitLogPresentation
     {
-        Dictionary<string, ComponentData> componentManager;
-        Dictionary<string, CommitData> commitManager;
-        GitLogArguments gitArgument;
-        GitLogErrors errorManager; 
-
-        public GitLogPresentation(Dictionary<string, ComponentData> componentManager,
-            Dictionary<string, CommitData> commitManager, 
-            GitLogArguments gitArgument,
-            GitLogErrors errorManager)
+        GitReportCreator reportHandler;
+        public GitLogPresentation(GitReportCreator reportHandler)
         {
-            this.commitManager = commitManager;
-            this.componentManager = componentManager;
-            this.gitArgument = gitArgument;
-            this.errorManager = errorManager;            
+            this.reportHandler = reportHandler;
         }
         public void PresentReport()
         {
-            if (componentManager.Count == 0)
+            if (this.reportHandler.ComponentDictionary.Count == 0)
             {
-                errorManager.ShowDictionaryEmpty();
+                Console.WriteLine("Json configuration file was not found. " +
+                    "Check if it is in application folder.");
             }
             var writer = Console.Out;
 
             writer.WriteLine("CommitHash, CommiterName, CommitDate, CommitInfo");
-            foreach (var commit in commitManager)
+            foreach (var commit in this.reportHandler.CommitDictionary)
             {
                 string date = DateTime.Parse(commit.Value.CommitDate).ToShortDateString();
                 writer.WriteLine("{0},\t{1},\t{2},\t{3}", commit.Key, commit.Value.CommiterName,
@@ -38,7 +28,7 @@ namespace GitReport.CLI
             }
 
             writer.WriteLine("\n\n\nCommitHash, ComponentId, Insertion, Deletion");
-            foreach (var component in componentManager)
+            foreach (var component in this.reportHandler.ComponentDictionary)
             {
                 writer.WriteLine("{0},\t{1},\t{2},\t{3}", component.Value.ComponentHash,
                     component.Value.ComponentId, component.Value.InsertionCounter,
