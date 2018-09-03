@@ -1,5 +1,4 @@
 ﻿using ReportCreator;
-using System.Collections.Generic;
 
 namespace GitReport.CLI
 {
@@ -25,13 +24,10 @@ namespace GitReport.CLI
             GitProcess processRunner = new GitProcess(gitArgument, jsonConfig);
             string processOutput = processRunner.RunGitLogProcess();
 
-            GitReportCreator reportHandler =
-                new GitReportCreator(jsonConfig, new Dictionary<string,
-                ComponentData>(), new Dictionary<string, CommitData>()); 
+            GitReportCreator reportHandler = new GitReportCreator(jsonConfig); 
             reportHandler.CreateFullReport(processOutput);
 
-            GitLogPresentation reportPresentation =
-                new GitLogPresentation(reportHandler);
+            GitLogPresentation reportPresentation = new GitLogPresentation(reportHandler);
             reportPresentation.PresentReport();
         }
     }

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ReportCreator
@@ -7,9 +7,8 @@ namespace ReportCreator
     public class JsonConfig : IJsonConfig
     {
         private static IConfiguration Configuration { get; set; }
-        public List<string> Seperator { get; private set; }
-        private Dictionary<string, string> JsonDictionary { get; set; }
-
+        public List<string> SeperatorList { get; private set; }
+        private Dictionary<string, string> IdPathDictionary { get; set; }
         public JsonConfig()
         {
             var builder = new ConfigurationBuilder()
@@ -17,50 +16,63 @@ namespace ReportCreator
                 .AddJsonFile("AllComponents.json", optional: true, reloadOnChange: true);
             Configuration = builder.Build();
 
-            this.JsonDictionary = new Dictionary<string, string>();
-            this.Seperator = new List<string>();
+            this.IdPathDictionary = new Dictionary<string, string>();
+            this.SeperatorList = new List<string>();
 
-            CreateJsonDictionary();
-            AssignOutPutCutters();
+            CreateIdPathDictionary();
+            CreateSeparatorList();
         }
         public bool TryMatchPath(string pathFromProcess, out string finalId)
         {
-            foreach (var jsonId in JsonDictionary)
+            foreach (var idPath in IdPathDictionary)
             {
-                if (pathFromProcess.Contains(jsonId.Value))
+                if (pathFromProcess.Contains(idPath.Value))
                 {
-                    finalId = jsonId.Key;
+                    finalId = idPath.Key;
                     return true;
                 }
             }
             finalId = string.Empty;
             return false;
         }
-        public string FetchSepatator(bool whichSepatator)
+        public string GetSeparator(Separator separator)
         {
-            if (whichSepatator)
+            switch (separator)
             {
-                return Seperator[0];
+                case Separator.Commit:
+                    {
+                        return SeperatorList[1];
+                    }
+                case Separator.Output:
+                    {
+                        return SeperatorList[0];
+                    }
             }
-            return Seperator[1];
+            return string.Empty;
         }
-        private void CreateJsonDictionary()
+        private void CreateIdPathDictionary()
         {
             var pathKeys = Configuration.GetSection("components").GetChildren();
             char[] charsToTrim = { '*' };
+
             foreach (var key in pathKeys)
             {
-                JsonDictionary.Add(key["id"], key["paths"].TrimEnd(charsToTrim));
+                IdPathDictionary.Add(key["id"], key["paths"].TrimEnd(charsToTrim));
             }
         }
-        private void AssignOutPutCutters()
+        private void CreateSeparatorList()
         {
             var pathKeys = Configuration.GetSection("stringSeperator").GetChildren();
             
             foreach (var key in pathKeys)
             {
-                Seperator.Add(key["separator"]);
+                SeperatorList.Add(key["separator"]);
             }
+        }
+        public enum Separator
+        {
+            Output,
+            Commit
         }
     }
 }

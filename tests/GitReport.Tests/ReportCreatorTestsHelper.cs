@@ -20,13 +20,20 @@ namespace GitReport.Tests
             finalId = string.Empty;
             return false;
         }
-        public string FetchSepatator(bool whichSepatator)
+        public string GetSeparator(JsonConfig.Separator separator)
         {
-            if (whichSepatator)
+            switch (separator)
             {
-                return "divideLine";
+                case JsonConfig.Separator.Commit:
+                    {
+                        return "smallLine";
+                    }
+                case JsonConfig.Separator.Output:
+                    {
+                        return "divideLine";
+                    }
             }
-            return "smallLine";
+            return string.Empty;
         }
     }
 }

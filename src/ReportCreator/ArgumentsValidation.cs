@@ -6,10 +6,10 @@ namespace ReportCreator
     {
         public GitArguments GitArgument { get; private set; } 
         IDirectoryValidation directoryValidation;
-        public ArgumentsValidation(GitArguments GitArgument,
+        public ArgumentsValidation(GitArguments gitArgument,
             IDirectoryValidation directoryValidation)
         {
-            this.GitArgument = GitArgument;
+            this.GitArgument = gitArgument;
             this.directoryValidation = directoryValidation;
         }
         public bool AreDatesPathValid(string[] arguments)
@@ -20,10 +20,10 @@ namespace ReportCreator
             bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
             GitArgument.DateBefore = BeforeDate;
 
-            bool pathExistenceValidator =
-            directoryValidation.CheckIfDirectoryIsValid(arguments[2]);
+            bool pathValidator =
+            directoryValidation.IsDirectoryValid(arguments[2]);
 
-            if (pathExistenceValidator)
+            if (pathValidator)
             {
                 GitArgument.GitPath = arguments[2];
             }
@@ -33,7 +33,7 @@ namespace ReportCreator
             }
 
             if (!sinceDateValidator || !beforeDateValidator ||
-                !pathExistenceValidator || SinceDate > BeforeDate)
+                !pathValidator || SinceDate > BeforeDate)
             {
                 return false;
             }

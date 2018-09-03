@@ -4,7 +4,7 @@ namespace GitReport.Tests
 {
     class ArgumentsValidationTestsHelper : IDirectoryValidation 
     {
-        public bool CheckIfDirectoryIsValid(string arg)
+        public bool IsDirectoryValid(string arg)
         {
             string localPath = @"C:\git";
             bool pathExistenceValidator = arg.Contains(localPath);

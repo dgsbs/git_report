@@ -48,8 +48,9 @@ namespace ReportCreator
         }
         private string BuildGitLogCommand()
         {
-            return $"log --pretty=\"{jsonConfig.FetchSepatator(true)}%n%H%n%cn%n%ci%n%s%n" +
-                $"{jsonConfig.FetchSepatator(false)}\" --numstat " +
+            return $"log --pretty=\"" +
+                $"{jsonConfig.GetSeparator(JsonConfig.Separator.Output)}%n%H%n%cn%n%ci%n%s%n" +
+                $"{jsonConfig.GetSeparator(JsonConfig.Separator.Commit)}\" --numstat " +
                 $"--since=\"{DateSince.ToShortDateString()} 24:00\"" +
                 $" --before=\"{DateBefore.ToShortDateString()} 24:00\"";
         }

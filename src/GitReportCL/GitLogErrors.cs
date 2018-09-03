@@ -11,16 +11,18 @@ namespace GitReport.CLI
             this.gitArgument = gitArgument;
         }
         public void FixDatePathError(string[] currentArguments, 
-             out string[] newArguments)
+            out string[] newArguments)
         {
             if (this.gitArgument.DateSince == DateTime.MinValue)
             {
-                currentArguments[0] = EnterDate("start-date", true);
+                currentArguments[0] = 
+                    EnterDate("start-date", DateFormatMessage.WrongFormat);
             }
 
             if (this.gitArgument.DateBefore == DateTime.MinValue)
             {
-                currentArguments[1] = EnterDate("end-date", true);
+                currentArguments[1] = 
+                    EnterDate("end-date", DateFormatMessage.WrongFormat);
             }
 
             if (this.gitArgument.DateSince > this.gitArgument.DateBefore &&
@@ -28,40 +30,57 @@ namespace GitReport.CLI
                 this.gitArgument.DateBefore != DateTime.MinValue)
             {
                 Console.WriteLine("The end-date was more previous then start-date.");
-                currentArguments[0] = EnterDate("start-date", false);
-                currentArguments[1] = EnterDate("end-date", false);
+                currentArguments[0] = 
+                    EnterDate("start-date", DateFormatMessage.CorrectFormat);
+                currentArguments[1] = 
+                    EnterDate("end-date", DateFormatMessage.CorrectFormat);
             }
 
             if (this.gitArgument.GitPath == string.Empty)
             {
-                currentArguments[2] = EnterPath(true);
+                currentArguments[2] = 
+                    EnterPath(PathCompatibilityMessage.WrongPath);
             }
+
             newArguments = currentArguments;
         }
-        private string EnterDate(string whichDate, bool messageTypeFlag)
+        private string EnterDate(string whichDate, DateFormatMessage message)
         {
-            if (messageTypeFlag)
+            switch (message)
             {
-                Console.WriteLine("Format that you used while entering the " + whichDate +
-                " was wrong.");
+                case DateFormatMessage.WrongFormat :
+                {
+                    Console.WriteLine("Format that you used while entering the " +
+                            $"{whichDate} + was wrong.");
+                    break;
+                }
             }
-            Console.WriteLine("Please enter new " + whichDate + ":");
+            Console.WriteLine($"Please enter new + {whichDate} + :");
 
             return Console.ReadLine();
         }
-        private string EnterPath(bool messageTypeFlag)
+        private string EnterPath(PathCompatibilityMessage message)
         {
-            if (messageTypeFlag)
+            switch (message)
             {
-                Console.WriteLine("There is something wrong with the path you have entered." +
+                case PathCompatibilityMessage.WrongPath :
+                {
+                    Console.WriteLine("There is something wrong with the path you have entered." +
                     " Be sure to use folder connected to GitHub. Please try again.");
-            }
-            else
-            {
-                Console.WriteLine("To run Git Report you need to a path to your folder " +
-                    "connected to GitHub. Please enter your the path.");
+                    break;
+                }
             }
             return Console.ReadLine();
+        }
+        private enum DateFormatMessage
+        {
+            CorrectFormat,
+            WrongFormat
+        }
+        private enum PathCompatibilityMessage
+        {
+            CorrectPath,
+            WrongPath
         }
     }
 }
