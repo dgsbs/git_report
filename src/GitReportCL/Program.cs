@@ -1,4 +1,5 @@
 ﻿using ReportCreator;
+using System.Collections.Generic;
 
 namespace GitReport.CLI
 {
@@ -6,29 +7,29 @@ namespace GitReport.CLI
     {
         static void Main(string[] args)
         {
-            GitArguments gitArgument = new GitArguments();
+            var gitArgument = new GitArguments();
             string[] newArgs = gitArgument.ManageGitArguments(args);
 
-            GitLogErrors errorHandler = new GitLogErrors(gitArgument);      
-            ArgumentsValidation gitArgsValidator =
+            var errorHandler = new GitLogErrors(gitArgument);
+            var gitArgsValidator =
                 new ArgumentsValidation(gitArgument, new DirectoryValidation());
 
             while (!gitArgsValidator.AreDatesPathValid(newArgs))
             {
-                string[] editedArgs = new string[3];
-                errorHandler.FixDatePathError(newArgs, out editedArgs);
-                newArgs = editedArgs;
+                newArgs = errorHandler.FixDatePathError(newArgs);
             }
 
             IJsonConfig jsonConfig = new JsonConfig();
-            GitProcess processRunner = new GitProcess(gitArgument, jsonConfig);
-            string processOutput = processRunner.RunGitLogProcess();
+            var processRunner = new GitProcess(gitArgument, jsonConfig);
+            var processOutput = processRunner.RunGitLogProcess();
 
-            GitReportCreator reportHandler = new GitReportCreator(jsonConfig); 
-            reportHandler.CreateFullReport(processOutput);
+            var reportHandler = new GitReportCreator(jsonConfig); 
+            reportHandler.CreateFullReport(processOutput, 
+                out List<CommitData> CommitList,
+                out Dictionary<ComponentKey, ComponentData> ComponentDictionary);
 
-            GitLogPresentation reportPresentation = new GitLogPresentation(reportHandler);
-            reportPresentation.PresentReport();
+            var reportPresentation = new GitLogPresentation();
+            reportPresentation.PresentReport(in CommitList, in ComponentDictionary);
         }
     }
 }

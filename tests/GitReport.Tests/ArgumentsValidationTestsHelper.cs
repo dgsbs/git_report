@@ -6,8 +6,8 @@ namespace GitReport.Tests
     {
         public bool IsDirectoryValid(string arg)
         {
-            string localPath = @"C:\git";
-            bool pathExistenceValidator = arg.Contains(localPath);
+            var localPath = @"C:\git";
+            var pathExistenceValidator = arg.Contains(localPath);
             if (pathExistenceValidator)
             {
                 return true;

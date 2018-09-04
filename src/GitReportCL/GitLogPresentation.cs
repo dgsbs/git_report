@@ -1,19 +1,15 @@
 ﻿using System;
 using ReportCreator;
+using System.Collections.Generic;
 
 namespace GitReport.CLI
 {
     class GitLogPresentation
     {
-        GitReportCreator reportHandler;
-        public GitLogPresentation(GitReportCreator reportHandler)
+        public void PresentReport(in List<CommitData> commitList, 
+            in Dictionary<ComponentKey, ComponentData> componentDictionary)
         {
-            this.reportHandler = reportHandler;
-        }
-        public void PresentReport()
-        {
-            if (this.reportHandler.CommitList.Count == 0 &&
-                this.reportHandler.ComponentDictionary.Count == 0)
+            if (commitList.Count == 0 && componentDictionary.Count == 0)
             {
                 Console.WriteLine("Json configuration file was not found. " +
                     "Check if it is in application folder.");
@@ -21,16 +17,16 @@ namespace GitReport.CLI
             var writer = Console.Out;
 
             writer.WriteLine("CommitHash, CommiterName, CommitDate, CommitInfo");
-            foreach (var commit in this.reportHandler.CommitList)
+            foreach (var commit in commitList)
             {
-                string date = DateTime.Parse(commit.CommitDate).ToShortDateString();
+                var date = DateTime.Parse(commit.CommitDate).ToShortDateString();
                
                 writer.WriteLine($"{commit.CommitHash},\t{commit.CommiterName}," +
                     $"\t{date},\t{commit.CommitMessage}");
             }
 
             writer.WriteLine("\n\n\nCommitHash, ComponentId, Insertion, Deletion");
-            foreach (var component in this.reportHandler.ComponentDictionary)
+            foreach (var component in componentDictionary)
             {
                 writer.WriteLine($"{component.Key.CommitHash},\t{component.Key.ComponentId}," +
                     $"\t{component.Value.InsertionCounter},\t{component.Value.DeletionCounter}");

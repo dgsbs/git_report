@@ -10,8 +10,8 @@ namespace ReportCreator
 
         public string[] ManageGitArguments(string[] args)
         {
-            string[] reportArguments = new string[3];
-            DateTime today = DateTime.Today;
+            var reportArguments = new string[3];
+            var today = DateTime.Today.AddDays(-70);
 
             if (args.Length == 2)
             {
@@ -29,16 +29,16 @@ namespace ReportCreator
         }
         private string GetDateSince(string timePeriod)
         {
-            int numberOfDays = GetNumberOfDays(timePeriod);
+            var numberOfDays = GetNumberOfDays(timePeriod);
             DateTime dateSince;
 
             if (DateTime.Now.Hour < 10 && timePeriod == "oneDay")
             {
-                dateSince = DateTime.Today.AddDays(-(numberOfDays + 1));
+                dateSince = DateTime.Today.AddDays(-(70 + numberOfDays + 1));
             }
             else
             {
-                dateSince = DateTime.Today.AddDays(-numberOfDays);
+                dateSince = DateTime.Today.AddDays(-(70 + numberOfDays));
             }
             return dateSince.ToString();
         }

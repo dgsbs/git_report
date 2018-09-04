@@ -6,34 +6,35 @@ namespace ReportCreator
     public class GitProcess
     {
         private const string renameLimit = "config diff.renameLimit 999999";
-        private String GitPath { get; set; }
-        private DateTime DateSince { get; set; }
-        private DateTime DateBefore { get; set; }
-        IJsonConfig jsonConfig;
+        private string gitPath;
+        private DateTime dateSince;
+        private DateTime dateBefore;
+        private IJsonConfig jsonConfig;
         public GitProcess (GitArguments gitArgument, IJsonConfig JsonConfig)
         {
-            this.GitPath = gitArgument.GitPath;
-            this.DateSince = gitArgument.DateSince;
-            this.DateBefore = gitArgument.DateBefore;
+            this.gitPath = gitArgument.GitPath;
+            this.dateSince = gitArgument.DateSince;
+            this.dateBefore = gitArgument.DateBefore;
             this.jsonConfig = JsonConfig;
         }
         private string RunGitProcess(string processArguments)            
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo("git")
+            var startInfo = new ProcessStartInfo("git")
             {
-                WorkingDirectory = GitPath,
+                WorkingDirectory = this.gitPath,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 Arguments = processArguments
             };
-
-            var wholeStdOut = string.Empty;
-            var stdOneLine = string.Empty;
-            using (Process process = new Process())
+            
+            using (var process = new Process())
             {
                 process.StartInfo = startInfo;
                 process.Start();
-                
+
+                var wholeStdOut = string.Empty;
+                var stdOneLine = string.Empty;
+
                 while ((stdOneLine = process.StandardOutput.ReadLine()) != null)
                 {
                     wholeStdOut += stdOneLine;
@@ -49,16 +50,16 @@ namespace ReportCreator
         private string BuildGitLogCommand()
         {
             return $"log --pretty=\"" +
-                $"{jsonConfig.GetSeparator(JsonConfig.Separator.Output)}%n%H%n%cn%n%ci%n%s%n" +
-                $"{jsonConfig.GetSeparator(JsonConfig.Separator.Commit)}\" --numstat " +
-                $"--since=\"{DateSince.ToShortDateString()} 24:00\"" +
-                $" --before=\"{DateBefore.ToShortDateString()} 24:00\"";
+                $"{this.jsonConfig.GetSeparator(JsonConfig.Separator.Output)}%n%H%n%cn%n%ci%n%s%n" +
+                $"{this.jsonConfig.GetSeparator(JsonConfig.Separator.Commit)}\" --numstat " +
+                $"--since=\"{this.dateSince.ToShortDateString()} 24:00\"" +
+                $" --before=\"{this.dateBefore.ToShortDateString()} 24:00\"";
         }
         public string RunGitLogProcess()
         {
             RunGitProcess(renameLimit);
 
-            string gitLogArgument = BuildGitLogCommand();
+            var gitLogArgument = BuildGitLogCommand();
 
             return RunGitProcess(gitLogArgument);
         }

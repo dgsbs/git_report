@@ -8,51 +8,54 @@ namespace ReportCreator
         public Dictionary<ComponentKey, ComponentData> 
             ComponentDictionary { get; private set; }
         public List<CommitData> CommitList { get; private set; }
-        IJsonConfig jsonConfig;
+        private IJsonConfig jsonConfig;
         public GitReportCreator(IJsonConfig jsonConfig)
         {
             this.ComponentDictionary = new Dictionary<ComponentKey, ComponentData>();
             this.CommitList = new List<CommitData>();
             this.jsonConfig = jsonConfig;
         }
-        public void CreateFullReport(string gitOutput)
+        public void CreateFullReport(string gitOutput, out List<CommitData> outCommitList, 
+            out Dictionary<ComponentKey, ComponentData> outComponentDictionary)
         {
-            string[] outputSeparator = 
+            var outputSeparator = 
                 new[] { this.jsonConfig.GetSeparator(JsonConfig.Separator.Output) };
 
-            string[] commitByCommit =
+            var commitByCommit =
                 gitOutput.Split(outputSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-            string[] commitSeparator =
+            var commitSeparator =
                 new[] { this.jsonConfig.GetSeparator(JsonConfig.Separator.Commit) };
-            string commitHash = string.Empty;
+            var commitHash = string.Empty;
 
             foreach (var commit in commitByCommit)
             {
-                string[] commitDivided =
+                var commitDivided =
                     commit.Split(commitSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-                AddCommitDataToList(commitDivided[0], out commitHash);
+                commitHash = AddCommitDataToList(commitDivided[0]);
                 AddCommitsComponentData(commitDivided[1], commitHash);
             }
+            outCommitList = CommitList;
+            outComponentDictionary = ComponentDictionary;
         }
-        private void AddCommitDataToList(string commitData, out string commitHash)
+        private string AddCommitDataToList(string commitData)
         {
-            string[] lineByLine = commitData.Split('\n');
+            var lineByLine = commitData.Split('\n');
 
-            CommitData data = new CommitData
+            var data = new CommitData
             {
                 CommitHash = lineByLine[1].Trim(),
                 CommiterName = lineByLine[2].Trim(),
                 CommitDate = lineByLine[3].Trim(),
                 CommitMessage = lineByLine[4].Trim()
             };
-            commitHash = data.CommitHash;
             CommitList.Add(data);
+            return data.CommitHash;
         }
         private void AddCommitsComponentData(string oneCommitData, string commitHash)
         {
-            string[] lineByLine = oneCommitData.Split('\n');
+            var lineByLine = oneCommitData.Split('\n');
 
             foreach (var line in lineByLine)
             {
@@ -65,13 +68,13 @@ namespace ReportCreator
         private void AddEditComponentData(string oneLineData, string commitHash)
         {
             var componentNewId = string.Empty;
-            ComponentKey existingKey = new ComponentKey();
-            string[] oneLineSeparated = oneLineData.Split
+            var existingKey = new ComponentKey();
+            var oneLineSeparated = oneLineData.Split
                 (new Char[] { '\t', ' ' },StringSplitOptions.RemoveEmptyEntries);
 
             if (this.jsonConfig.TryMatchPath(oneLineSeparated[2], out componentNewId))
             {
-                ComponentKey componentKey = new ComponentKey
+                var componentKey = new ComponentKey
                 {
                     CommitHash = commitHash,
                     ComponentId = componentNewId
@@ -85,7 +88,7 @@ namespace ReportCreator
                 }
                 else
                 { 
-                    ComponentData componentCounter = new ComponentData
+                    var componentCounter = new ComponentData
                     {
                         InsertionCounter = GetNumberFromString(oneLineSeparated[0]),
                         DeletionCounter = GetNumberFromString(oneLineSeparated[1])
@@ -100,8 +103,7 @@ namespace ReportCreator
 
             foreach (var dictionaryItem in ComponentDictionary)
             {
-                if (dictionaryItem.Key.CommitHash == data.CommitHash &&
-                    dictionaryItem.Key.ComponentId == data.ComponentId)
+                if (dictionaryItem.Key.Equals(data))
                 {
                     existingKey = dictionaryItem.Key;
                     return true;
@@ -111,9 +113,9 @@ namespace ReportCreator
         }
         private int GetNumberFromString(string numberOfChanges)
         {
-            if (Int32.TryParse(numberOfChanges, out int parsedNumber))
+            if (Int32.TryParse(numberOfChanges, out int parsedString))
             {
-                return parsedNumber;
+                return parsedString;
             }
             else
             {

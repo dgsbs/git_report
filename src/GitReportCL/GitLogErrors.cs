@@ -10,8 +10,7 @@ namespace GitReport.CLI
         {
             this.gitArgument = gitArgument;
         }
-        public void FixDatePathError(string[] currentArguments, 
-            out string[] newArguments)
+        public string[] FixDatePathError(string[] currentArguments)
         {
             if (this.gitArgument.DateSince == DateTime.MinValue)
             {
@@ -42,7 +41,7 @@ namespace GitReport.CLI
                     EnterPath(PathCompatibilityMessage.WrongPath);
             }
 
-            newArguments = currentArguments;
+            return currentArguments;
         }
         private string EnterDate(string whichDate, DateFormatMessage message)
         {

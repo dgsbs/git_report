@@ -8,8 +8,7 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_ArgumentsInOrder_ValidResult()
         {
-            ArgumentsValidation validation = 
-                new ArgumentsValidation(new GitArguments(), 
+            var validation = new ArgumentsValidation(new GitArguments(), 
                 new ArgumentsValidationTestsHelper());    
 
             var isValid = validation.AreDatesPathValid(new[]
@@ -32,8 +31,7 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_SinceDateWrongFormat_InvalidResult()
         {
-            ArgumentsValidation validation =
-                new ArgumentsValidation(new GitArguments(), 
+            var validation = new ArgumentsValidation(new GitArguments(), 
                 new ArgumentsValidationTestsHelper());
 
             var isValid = validation.AreDatesPathValid(new[]
@@ -49,8 +47,7 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_BeforeDateWrongFormat_InvalidResult()
         {
-            ArgumentsValidation validation =
-                new ArgumentsValidation(new GitArguments(), 
+            var validation = new ArgumentsValidation(new GitArguments(), 
                 new ArgumentsValidationTestsHelper());
 
             var isValid = validation.AreDatesPathValid(new[]
@@ -66,8 +63,7 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_BeforeDateMorePrevious_InvalidResult()
         {
-            ArgumentsValidation validation =
-                new ArgumentsValidation(new GitArguments(), 
+            var validation = new ArgumentsValidation(new GitArguments(), 
                 new ArgumentsValidationTestsHelper());
 
             var isValid = validation.AreDatesPathValid(new[]
@@ -83,8 +79,7 @@ namespace GitReport.Tests
         [Fact]
         public void AreDatesPathValid_WrongPathFromInput_InvalidResult()
         {
-            ArgumentsValidation validation =
-                new ArgumentsValidation(new GitArguments(), 
+            var validation = new ArgumentsValidation(new GitArguments(), 
                 new ArgumentsValidationTestsHelper());
 
             var isValid = validation.AreDatesPathValid(new[]

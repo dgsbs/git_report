@@ -6,17 +6,17 @@ namespace ReportCreator
 {
     public class JsonConfig : IJsonConfig
     {
-        private static IConfiguration Configuration { get; set; }
+        private static IConfiguration configuration;
+        private Dictionary<string, string> idPathDictionary;
         public List<string> SeperatorList { get; private set; }
-        private Dictionary<string, string> IdPathDictionary { get; set; }
         public JsonConfig()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("AllComponents.json", optional: true, reloadOnChange: true);
-            Configuration = builder.Build();
+            configuration = builder.Build();
 
-            this.IdPathDictionary = new Dictionary<string, string>();
+            this.idPathDictionary = new Dictionary<string, string>();
             this.SeperatorList = new List<string>();
 
             CreateIdPathDictionary();
@@ -24,7 +24,7 @@ namespace ReportCreator
         }
         public bool TryMatchPath(string pathFromProcess, out string finalId)
         {
-            foreach (var idPath in IdPathDictionary)
+            foreach (var idPath in this.idPathDictionary)
             {
                 if (pathFromProcess.Contains(idPath.Value))
                 {
@@ -52,17 +52,17 @@ namespace ReportCreator
         }
         private void CreateIdPathDictionary()
         {
-            var pathKeys = Configuration.GetSection("components").GetChildren();
+            var pathKeys = configuration.GetSection("components").GetChildren();
             char[] charsToTrim = { '*' };
 
             foreach (var key in pathKeys)
             {
-                IdPathDictionary.Add(key["id"], key["paths"].TrimEnd(charsToTrim));
+                this.idPathDictionary.Add(key["id"], key["paths"].TrimEnd(charsToTrim));
             }
         }
         private void CreateSeparatorList()
         {
-            var pathKeys = Configuration.GetSection("stringSeperator").GetChildren();
+            var pathKeys = configuration.GetSection("stringSeperator").GetChildren();
             
             foreach (var key in pathKeys)
             {

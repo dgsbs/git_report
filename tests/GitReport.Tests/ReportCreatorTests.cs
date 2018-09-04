@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using ReportCreator;
+using System.Collections.Generic;
 
 namespace GitReport.Tests
 {
@@ -8,8 +9,7 @@ namespace GitReport.Tests
         [Fact]
         public void CreateReport_ManyCommits_NumberOfObjectsCreatedEqualsNumberIntended()
         {
-            GitReportCreator reportCreator = 
-                new GitReportCreator(new ReportCreatorTestsHelper());
+            var reportCreator = new GitReportCreator(new ReportCreatorTestsHelper());
 
             const string testOutput = @"divideLine
                                         asdasdasd234234sedfdsf2323aewas23
@@ -32,31 +32,31 @@ namespace GitReport.Tests
                                         1       1       Common/Knowledge/Start/Abort.txt
                                         62      5       Computer/IsSlow/Why/Google.txt";
 
-            reportCreator.CreateFullReport(testOutput);
+            reportCreator.CreateFullReport(testOutput, out List < CommitData > commitList,
+                out Dictionary<ComponentKey, ComponentData> componentDictionary);
 
-            Assert.Equal(2, reportCreator.CommitList.Count);
-            Assert.Equal(2, reportCreator.ComponentDictionary.Count);
+            Assert.Equal(2, commitList.Count);
+            Assert.Equal(2, componentDictionary.Count);
         }
        
         [Fact]
         public void CreateReport_ManyCommits_NumberOfObjectsEqualsEmptyInput()
         {
-            GitReportCreator reportCreator =
-                new GitReportCreator(new ReportCreatorTestsHelper());
+            var reportCreator = new GitReportCreator(new ReportCreatorTestsHelper());
 
-            string testOutput = "";
+            const string testOutput = "";
 
-            reportCreator.CreateFullReport(testOutput);
+            reportCreator.CreateFullReport(testOutput, out List<CommitData> commitList,
+                out Dictionary<ComponentKey, ComponentData> componentDictionary);
 
-            Assert.Empty(reportCreator.CommitList);
-            Assert.Empty(reportCreator.ComponentDictionary);
+            Assert.Empty(commitList);
+            Assert.Empty(componentDictionary);
         }
 
         [Fact]
         public void CreateReport_OneCommit_CommitDictionaryDataEqualsDataFromCommit()
         {
-            GitReportCreator reportCreator =
-                new GitReportCreator(new ReportCreatorTestsHelper());
+            var reportCreator = new GitReportCreator(new ReportCreatorTestsHelper());
 
             const string testOutput = @"divideLine
                                         asdasdasd234234sedfdsf2323aewas23
@@ -69,20 +69,20 @@ namespace GitReport.Tests
                                         1       1       Common/Knowledge/Start/Abort.txt
                                         62      5       Computer/IsSlow/Why/Google.txt";
 
-            reportCreator.CreateFullReport(testOutput);
+            reportCreator.CreateFullReport(testOutput, out List<CommitData> commitList,
+                out Dictionary<ComponentKey, ComponentData> componentDictionary);
 
-            Assert.Equal("Bruce Lee", reportCreator.CommitList[0].CommiterName);
-            Assert.Equal("05/02/2018", reportCreator.CommitList[0].CommitDate);
-            Assert.Equal("Changes needed", reportCreator.CommitList[0].CommitMessage);
+            Assert.Equal("Bruce Lee", commitList[0].CommiterName);
+            Assert.Equal("05/02/2018", commitList[0].CommitDate);
+            Assert.Equal("Changes needed", commitList[0].CommitMessage);
             Assert.Equal("asdasdasd234234sedfdsf2323aewas23", 
-                reportCreator.CommitList[0].CommitHash);
+                commitList[0].CommitHash);
         }
 
         [Fact]
         public void CreateReport_ManyCommits_ComponentDictionaryDataEqualsDataFromCommit()
         {
-            GitReportCreator reportCreator =
-                new GitReportCreator(new ReportCreatorTestsHelper());
+            var reportCreator = new GitReportCreator(new ReportCreatorTestsHelper());
             
             const string testOutput = @"divideLine
                                         asdasdasd234234sedfdsf2323aewas23
@@ -95,17 +95,18 @@ namespace GitReport.Tests
                                         1       1       Common/Knowledge/Start/Abort.txt
                                         62      5       Computer/IsSlow/Why/Google.txt";
 
-            reportCreator.CreateFullReport(testOutput);
+            reportCreator.CreateFullReport(testOutput, out List<CommitData> commitList,
+                out Dictionary<ComponentKey, ComponentData> componentDictionary); ;
 
-            var dictionaryEnumerator = reportCreator.ComponentDictionary.GetEnumerator();
+            var dictionaryEnumerator = componentDictionary.GetEnumerator();
             dictionaryEnumerator.MoveNext();
 
-            Assert.Single(reportCreator.ComponentDictionary);
-            Assert.Equal(2, reportCreator.ComponentDictionary
+            Assert.Single(componentDictionary);
+            Assert.Equal(2, componentDictionary
                 [dictionaryEnumerator.Current.Key].InsertionCounter);
-            Assert.Equal(3, reportCreator.ComponentDictionary
+            Assert.Equal(3, componentDictionary
                 [dictionaryEnumerator.Current.Key].DeletionCounter);
-            Assert.True(reportCreator.ComponentDictionary.ContainsKey
+            Assert.True(componentDictionary.ContainsKey
                 (dictionaryEnumerator.Current.Key));
         }
     }

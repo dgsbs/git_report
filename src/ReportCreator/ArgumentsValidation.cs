@@ -5,7 +5,7 @@ namespace ReportCreator
     public class ArgumentsValidation 
     {
         public GitArguments GitArgument { get; private set; } 
-        IDirectoryValidation directoryValidation;
+        private IDirectoryValidation directoryValidation;
         public ArgumentsValidation(GitArguments gitArgument,
             IDirectoryValidation directoryValidation)
         {
@@ -14,14 +14,13 @@ namespace ReportCreator
         }
         public bool AreDatesPathValid(string[] arguments)
         {
-            bool sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
+            var sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
             GitArgument.DateSince = SinceDate;
 
-            bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
+            var beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
             GitArgument.DateBefore = BeforeDate;
 
-            bool pathValidator =
-            directoryValidation.IsDirectoryValid(arguments[2]);
+            var pathValidator = this.directoryValidation.IsDirectoryValid(arguments[2]);
 
             if (pathValidator)
             {
