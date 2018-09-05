@@ -20,7 +20,7 @@ namespace ReportCreator
             SeparatorDictionary = new Dictionary<Separator, string>();
 
             CreateIdPathDictionary();
-            CreateSeparatorList();
+            CreateSeparatorDictionary();
         }
         public bool TryMatchPath(string pathFromProcess, out string finalId)
         {
@@ -60,7 +60,7 @@ namespace ReportCreator
                 this.idPathDictionary.Add(key["id"], key["paths"].TrimEnd(charsToTrim));
             }
         }
-        private void CreateSeparatorList()
+        private void CreateSeparatorDictionary()
         {
             var outputSeparator = configuration.GetSection("outputSeparator");
             SeparatorDictionary.Add(Separator.Output, outputSeparator.Value.ToString());
