@@ -4,9 +4,9 @@ namespace ReportCreator
 {
     public class DirectoryValidation : IDirectoryValidation
     {
-        public bool IsDirectoryValid(string arg)
+        public bool IsDirectoryValid(string path)
         {
-            return Directory.Exists(arg);
+            return Directory.Exists(path);
         }
     }
 }

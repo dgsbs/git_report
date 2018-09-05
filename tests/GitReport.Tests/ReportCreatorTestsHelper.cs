@@ -25,13 +25,13 @@ namespace GitReport.Tests
             switch (separator)
             {
                 case JsonConfig.Separator.Commit:
-                    {
-                        return "smallLine";
-                    }
+                {
+                    return "smallLine";
+                }
                 case JsonConfig.Separator.Output:
-                    {
-                        return "divideLine";
-                    }
+                {
+                    return "divideLine";
+                }
             }
             return string.Empty;
         }

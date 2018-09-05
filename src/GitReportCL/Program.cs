@@ -1,5 +1,4 @@
 ﻿using ReportCreator;
-using System.Collections.Generic;
 
 namespace GitReport.CLI
 {
@@ -8,11 +7,11 @@ namespace GitReport.CLI
         static void Main(string[] args)
         {
             var gitArgument = new GitArguments();
-            string[] newArgs = gitArgument.ManageGitArguments(args);
-
-            var errorHandler = new GitLogErrors(gitArgument);
+            var newArgs = gitArgument.ManageGitArguments(args);
+            
             var gitArgsValidator =
                 new ArgumentsValidation(gitArgument, new DirectoryValidation());
+            var errorHandler = new GitLogErrors(gitArgument);
 
             while (!gitArgsValidator.AreDatesPathValid(newArgs))
             {
@@ -23,13 +22,11 @@ namespace GitReport.CLI
             var processRunner = new GitProcess(gitArgument, jsonConfig);
             var processOutput = processRunner.RunGitLogProcess();
 
-            var reportHandler = new GitReportCreator(jsonConfig); 
-            reportHandler.CreateFullReport(processOutput, 
-                out List<CommitData> CommitList,
-                out Dictionary<ComponentKey, ComponentData> ComponentDictionary);
+            var reportHandler = new GitReportCreator(jsonConfig);
+            var report = reportHandler.CreateCompleteDictionary(processOutput);
 
             var reportPresentation = new GitLogPresentation();
-            reportPresentation.PresentReport(in CommitList, in ComponentDictionary);
+            reportPresentation.PresentReport(report);
         }
     }
 }

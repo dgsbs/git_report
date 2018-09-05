@@ -10,12 +10,12 @@ namespace ReportCreator
         private DateTime dateSince;
         private DateTime dateBefore;
         private IJsonConfig jsonConfig;
-        public GitProcess (GitArguments gitArgument, IJsonConfig JsonConfig)
+        public GitProcess (GitArguments gitArgument, IJsonConfig jsonConfig)
         {
             this.gitPath = gitArgument.GitPath;
             this.dateSince = gitArgument.DateSince;
             this.dateBefore = gitArgument.DateBefore;
-            this.jsonConfig = JsonConfig;
+            this.jsonConfig = jsonConfig;
         }
         private string RunGitProcess(string processArguments)            
         {

@@ -9,7 +9,7 @@ namespace ReportCreator
         public ArgumentsValidation(GitArguments gitArgument,
             IDirectoryValidation directoryValidation)
         {
-            this.GitArgument = gitArgument;
+            GitArgument = gitArgument;
             this.directoryValidation = directoryValidation;
         }
         public bool AreDatesPathValid(string[] arguments)

@@ -30,9 +30,9 @@ namespace GitReport.CLI
             {
                 Console.WriteLine("The end-date was more previous then start-date.");
                 currentArguments[0] = 
-                    EnterDate("start-date", DateFormatMessage.CorrectFormat);
+                    EnterDate("start-date", DateFormatMessage.EndDateMorePrevious);
                 currentArguments[1] = 
-                    EnterDate("end-date", DateFormatMessage.CorrectFormat);
+                    EnterDate("end-date", DateFormatMessage.EndDateMorePrevious);
             }
 
             if (this.gitArgument.GitPath == string.Empty)
@@ -50,11 +50,11 @@ namespace GitReport.CLI
                 case DateFormatMessage.WrongFormat :
                 {
                     Console.WriteLine("Format that you used while entering the " +
-                            $"{whichDate} + was wrong.");
+                            $"{whichDate} was wrong.");
                     break;
                 }
             }
-            Console.WriteLine($"Please enter new + {whichDate} + :");
+            Console.WriteLine($"Please enter new {whichDate}:");
 
             return Console.ReadLine();
         }
@@ -73,12 +73,11 @@ namespace GitReport.CLI
         }
         private enum DateFormatMessage
         {
-            CorrectFormat,
+            EndDateMorePrevious,
             WrongFormat
         }
         private enum PathCompatibilityMessage
         {
-            CorrectPath,
             WrongPath
         }
     }

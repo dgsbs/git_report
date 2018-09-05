@@ -5,20 +5,38 @@ namespace ReportCreator
 {
     public class GitReportCreator
     {
-        public Dictionary<ComponentKey, ComponentData> 
-            ComponentDictionary { get; private set; }
-        public List<CommitData> CommitList { get; private set; }
+        private Dictionary<HashIdKey, AllDataFromCommit> completeDictionary;
+        private Dictionary<HashIdKey, ComponentData> componentDictionary;
+        private Dictionary<string, CommitData> commitDictionary;
         private IJsonConfig jsonConfig;
         public GitReportCreator(IJsonConfig jsonConfig)
         {
-            this.ComponentDictionary = new Dictionary<ComponentKey, ComponentData>();
-            this.CommitList = new List<CommitData>();
+            this.completeDictionary = new Dictionary<HashIdKey, AllDataFromCommit>();
+            this.componentDictionary = new Dictionary<HashIdKey, ComponentData>();
+            this.commitDictionary = new Dictionary<string,CommitData>();
             this.jsonConfig = jsonConfig;
         }
-        public void CreateFullReport(string gitOutput, out List<CommitData> outCommitList, 
-            out Dictionary<ComponentKey, ComponentData> outComponentDictionary)
+        public Dictionary<HashIdKey, AllDataFromCommit> CreateCompleteDictionary(string gitOutput)
         {
-            var outputSeparator = 
+            CollectCommitComponentData(gitOutput);
+
+            foreach (var dictioanryItem in this.componentDictionary)
+            {
+                var allCommponents = new AllDataFromCommit()
+                {
+                    InsertionCounter = dictioanryItem.Value.InsertionCounter,
+                    DeletionCounter = dictioanryItem.Value.DeletionCounter,
+                    CommiterName = this.commitDictionary[dictioanryItem.Key.CommitHash].CommiterName,
+                    CommitDate = this.commitDictionary[dictioanryItem.Key.CommitHash].CommitDate,
+                    CommitMessage = this.commitDictionary[dictioanryItem.Key.CommitHash].CommitMessage
+                };
+                this.completeDictionary.Add(dictioanryItem.Key, allCommponents);
+            }
+            return this.completeDictionary;
+        }
+        private void CollectCommitComponentData(string gitOutput)
+        {
+            var outputSeparator =
                 new[] { this.jsonConfig.GetSeparator(JsonConfig.Separator.Output) };
 
             var commitByCommit =
@@ -33,25 +51,22 @@ namespace ReportCreator
                 var commitDivided =
                     commit.Split(commitSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-                commitHash = AddCommitDataToList(commitDivided[0]);
+                commitHash = AddCommitDataToDictionary(commitDivided[0]);
                 AddCommitsComponentData(commitDivided[1], commitHash);
             }
-            outCommitList = CommitList;
-            outComponentDictionary = ComponentDictionary;
         }
-        private string AddCommitDataToList(string commitData)
+        private string AddCommitDataToDictionary(string commitData)
         {
             var lineByLine = commitData.Split('\n');
-
+            var commitHash = lineByLine[1].Trim();
             var data = new CommitData
             {
-                CommitHash = lineByLine[1].Trim(),
                 CommiterName = lineByLine[2].Trim(),
                 CommitDate = lineByLine[3].Trim(),
                 CommitMessage = lineByLine[4].Trim()
             };
-            CommitList.Add(data);
-            return data.CommitHash;
+            this.commitDictionary.Add(commitHash,data);
+            return commitHash;
         }
         private void AddCommitsComponentData(string oneCommitData, string commitHash)
         {
@@ -68,22 +83,22 @@ namespace ReportCreator
         private void AddEditComponentData(string oneLineData, string commitHash)
         {
             var componentNewId = string.Empty;
-            var existingKey = new ComponentKey();
+            var existingKey = new HashIdKey();
             var oneLineSeparated = oneLineData.Split
                 (new Char[] { '\t', ' ' },StringSplitOptions.RemoveEmptyEntries);
 
             if (this.jsonConfig.TryMatchPath(oneLineSeparated[2], out componentNewId))
             {
-                var componentKey = new ComponentKey
+                var componentKey = new HashIdKey
                 {
                     CommitHash = commitHash,
                     ComponentId = componentNewId
                 };
                 if (TryMatchComponent(componentKey,out existingKey))
                 {
-                    ComponentDictionary[existingKey].InsertionCounter += 
+                    this.componentDictionary[existingKey].InsertionCounter += 
                         GetNumberFromString(oneLineSeparated[0]);
-                    ComponentDictionary[existingKey].DeletionCounter += 
+                    this.componentDictionary[existingKey].DeletionCounter += 
                         GetNumberFromString(oneLineSeparated[1]);
                 }
                 else
@@ -93,15 +108,15 @@ namespace ReportCreator
                         InsertionCounter = GetNumberFromString(oneLineSeparated[0]),
                         DeletionCounter = GetNumberFromString(oneLineSeparated[1])
                     };
-                    ComponentDictionary.Add(componentKey, componentCounter);
+                    this.componentDictionary.Add(componentKey, componentCounter);
                 }
             }
         }
-        private bool TryMatchComponent(ComponentKey data, out ComponentKey existingKey)
+        private bool TryMatchComponent(HashIdKey data, out HashIdKey existingKey)
         {
-            existingKey = new ComponentKey();
+            existingKey = new HashIdKey();
 
-            foreach (var dictionaryItem in ComponentDictionary)
+            foreach (var dictionaryItem in this.componentDictionary)
             {
                 if (dictionaryItem.Key.Equals(data))
                 {

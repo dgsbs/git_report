@@ -6,30 +6,27 @@ namespace GitReport.CLI
 {
     class GitLogPresentation
     {
-        public void PresentReport(in List<CommitData> commitList, 
-            in Dictionary<ComponentKey, ComponentData> componentDictionary)
+        public void PresentReport(Dictionary<HashIdKey, AllDataFromCommit> dictionary)
         {
-            if (commitList.Count == 0 && componentDictionary.Count == 0)
+            if (dictionary.Count == 0)
             {
                 Console.WriteLine("Json configuration file was not found. " +
                     "Check if it is in application folder.");
             }
             var writer = Console.Out;
-
-            writer.WriteLine("CommitHash, CommiterName, CommitDate, CommitInfo");
-            foreach (var commit in commitList)
+            writer.WriteLine("CommitHash, ComponentId, CommiterName, CommitDate, CommitInfo, " +
+                "Insertions, Deletions");
+            foreach (var dictionaryItem in dictionary)
             {
-                var date = DateTime.Parse(commit.CommitDate).ToShortDateString();
-               
-                writer.WriteLine($"{commit.CommitHash},\t{commit.CommiterName}," +
-                    $"\t{date},\t{commit.CommitMessage}");
-            }
+                var date = DateTime.Parse(dictionaryItem.Value.CommitDate).ToShortDateString();
 
-            writer.WriteLine("\n\n\nCommitHash, ComponentId, Insertion, Deletion");
-            foreach (var component in componentDictionary)
-            {
-                writer.WriteLine($"{component.Key.CommitHash},\t{component.Key.ComponentId}," +
-                    $"\t{component.Value.InsertionCounter},\t{component.Value.DeletionCounter}");
+                writer.WriteLine($"{dictionaryItem.Key.CommitHash}," +
+                    $"{dictionaryItem.Key.ComponentId}," +
+                    $"{dictionaryItem.Value.CommiterName}," +
+                    $"{date}," +
+                    $"{dictionaryItem.Value.CommitMessage}," +
+                    $"{dictionaryItem.Value.InsertionCounter}," +
+                    $"{dictionaryItem.Value.DeletionCounter}");
             }
         }
     }

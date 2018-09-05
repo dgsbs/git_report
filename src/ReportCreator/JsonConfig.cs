@@ -8,7 +8,7 @@ namespace ReportCreator
     {
         private static IConfiguration configuration;
         private Dictionary<string, string> idPathDictionary;
-        public List<string> SeperatorList { get; private set; }
+        public Dictionary<Separator, string> SeparatorDictionary { get; private set; }
         public JsonConfig()
         {
             var builder = new ConfigurationBuilder()
@@ -17,7 +17,7 @@ namespace ReportCreator
             configuration = builder.Build();
 
             this.idPathDictionary = new Dictionary<string, string>();
-            this.SeperatorList = new List<string>();
+            SeparatorDictionary = new Dictionary<Separator, string>();
 
             CreateIdPathDictionary();
             CreateSeparatorList();
@@ -40,13 +40,13 @@ namespace ReportCreator
             switch (separator)
             {
                 case Separator.Commit:
-                    {
-                        return SeperatorList[1];
-                    }
+                {
+                    return SeparatorDictionary[Separator.Commit];
+                }
                 case Separator.Output:
-                    {
-                        return SeperatorList[0];
-                    }
+                {
+                    return SeparatorDictionary[Separator.Output];
+                }
             }
             return string.Empty;
         }
@@ -62,12 +62,11 @@ namespace ReportCreator
         }
         private void CreateSeparatorList()
         {
-            var pathKeys = configuration.GetSection("stringSeperator").GetChildren();
-            
-            foreach (var key in pathKeys)
-            {
-                SeperatorList.Add(key["separator"]);
-            }
+            var outputSeparator = configuration.GetSection("outputSeparator");
+            SeparatorDictionary.Add(Separator.Output, outputSeparator.Value.ToString());
+
+            var commitSeparator = configuration.GetSection("commitSeparator");
+            SeparatorDictionary.Add(Separator.Commit, commitSeparator.Value);
         }
         public enum Separator
         {
