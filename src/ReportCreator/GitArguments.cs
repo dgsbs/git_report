@@ -9,7 +9,7 @@ namespace ReportCreator
         public DateTime DateBefore { get; set; }
         public string[] ManageGitArguments(string[] args)
         {
-            var dateHandler = new DateSinceManager(new DaysNumber());
+            var dateHandler = new DateSinceManager();
             var reportArguments = new string[3];
             var today = DateTime.Today;
 
@@ -17,8 +17,8 @@ namespace ReportCreator
             {
                 if (Int32.TryParse(args[1], out int parsedString))
                 {
-                    var enumFromInt = (DaysNumber.FromToday)parsedString;
-                    reportArguments[0] = dateHandler.GetDateSince(enumFromInt);
+                    var enumFromInt = (FromToday)parsedString;
+                    reportArguments[0] = dateHandler.GetDateString(enumFromInt);
                 }
                 reportArguments[1] = today.ToString();
                 reportArguments[2] = args[0];
@@ -26,7 +26,7 @@ namespace ReportCreator
             else
             {
                 reportArguments[0] = 
-                    dateHandler.GetDateSince(DaysNumber.FromToday.OneDay);
+                    dateHandler.GetDateString(FromToday.OneDay);
                 reportArguments[1] = today.ToString();
                 reportArguments[2] = "";
             }

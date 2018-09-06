@@ -71,14 +71,14 @@ namespace GitReport.CLI
             }
             return Console.ReadLine();
         }
-        private enum DateFormatMessage
-        {
-            EndDateMorePrevious,
-            WrongFormat
-        }
-        private enum PathCompatibilityMessage
-        {
-            WrongPath
-        }
+    }
+    public enum DateFormatMessage
+    {
+        EndDateMorePrevious,
+        WrongFormat
+    }
+    public enum PathCompatibilityMessage
+    {
+        WrongPath
     }
 }

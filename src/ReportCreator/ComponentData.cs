@@ -2,7 +2,7 @@
 {
     public class ComponentData
     {
-        public int InsertionCounter { get; set; }
-        public int DeletionCounter { get; set; }
+        public int ComponentInsertions { get; set; }
+        public int ComponentDeletions { get; set; }
     }
 }

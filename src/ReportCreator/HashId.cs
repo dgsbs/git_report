@@ -2,12 +2,12 @@
 
 namespace ReportCreator
 {
-    public class HashIdKey : IEquatable<HashIdKey>
+    public class HashId : IEquatable<HashId>
     {
         public string CommitHash { get; set; }
         public string ComponentId { get; set; }
 
-        public bool Equals(HashIdKey otherKey)
+        public bool Equals(HashId otherKey)
         {
             if (otherKey == null)
             {
@@ -25,7 +25,7 @@ namespace ReportCreator
         }
         public override bool Equals(object obj)
         {
-            var key = obj as HashIdKey;
+            var key = obj as HashId;
             if (key != null)
             {
                 return Equals(key);
@@ -37,7 +37,7 @@ namespace ReportCreator
         }
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 17 * 23 + CommitHash.GetHashCode() ^ 17 * 23 + ComponentId.GetHashCode(); ;
         }
     }
 }

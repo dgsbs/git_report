@@ -2,7 +2,7 @@
 
 namespace GitReport.Tests
 {
-    class ArgumentsValidationTestsHelper : IDirectoryValidation 
+    class DirectoryValidationStub : IDirectoryValidation 
     {
         public bool IsDirectoryValid(string arg)
         {

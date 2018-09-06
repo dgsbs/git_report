@@ -2,7 +2,7 @@
 
 namespace GitReport.Tests
 {
-    class ReportCreatorTestsHelper : IJsonConfig
+    class JsonConfigStub : IJsonConfig
     {
         public bool TryMatchPath(string pathFromProcess, out string finalId)
         {
@@ -11,24 +11,29 @@ namespace GitReport.Tests
                 finalId = "Common.Knowledge";
                 return true;
             }
-            if (pathFromProcess.Contains("Computer/IsSlow/AskGoogle/"))
+            if (pathFromProcess.Contains("Computer/IsSlow/"))
             {
                 finalId = "Computer.Slow";
+                return true;
+            }
+            if (pathFromProcess.Contains("Star/Wars/"))
+            {
+                finalId = "Star.Wars";
                 return true;
             }
 
             finalId = string.Empty;
             return false;
         }
-        public string GetSeparator(JsonConfig.Separator separator)
+        public string GetSeparator(Separator separator)
         {
             switch (separator)
             {
-                case JsonConfig.Separator.Commit:
+                case Separator.Commit:
                 {
                     return "smallLine";
                 }
-                case JsonConfig.Separator.Output:
+                case Separator.Output:
                 {
                     return "divideLine";
                 }

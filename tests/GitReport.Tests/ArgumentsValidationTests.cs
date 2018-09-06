@@ -9,7 +9,7 @@ namespace GitReport.Tests
         public void AreDatesPathValid_ArgumentsInOrder_ValidResult()
         {
             var validation = new ArgumentsValidation(new GitArguments(), 
-                new ArgumentsValidationTestsHelper());    
+                new DirectoryValidationStub());    
 
             var isValid = validation.AreDatesPathValid(new[]
             {
@@ -32,7 +32,7 @@ namespace GitReport.Tests
         public void AreDatesPathValid_SinceDateWrongFormat_InvalidResult()
         {
             var validation = new ArgumentsValidation(new GitArguments(), 
-                new ArgumentsValidationTestsHelper());
+                new DirectoryValidationStub());
 
             var isValid = validation.AreDatesPathValid(new[]
             {
@@ -48,7 +48,7 @@ namespace GitReport.Tests
         public void AreDatesPathValid_BeforeDateWrongFormat_InvalidResult()
         {
             var validation = new ArgumentsValidation(new GitArguments(), 
-                new ArgumentsValidationTestsHelper());
+                new DirectoryValidationStub());
 
             var isValid = validation.AreDatesPathValid(new[]
             {
@@ -64,7 +64,7 @@ namespace GitReport.Tests
         public void AreDatesPathValid_BeforeDateMorePrevious_InvalidResult()
         {
             var validation = new ArgumentsValidation(new GitArguments(), 
-                new ArgumentsValidationTestsHelper());
+                new DirectoryValidationStub());
 
             var isValid = validation.AreDatesPathValid(new[]
             {
@@ -80,7 +80,7 @@ namespace GitReport.Tests
         public void AreDatesPathValid_WrongPathFromInput_InvalidResult()
         {
             var validation = new ArgumentsValidation(new GitArguments(), 
-                new ArgumentsValidationTestsHelper());
+                new DirectoryValidationStub());
 
             var isValid = validation.AreDatesPathValid(new[]
             {

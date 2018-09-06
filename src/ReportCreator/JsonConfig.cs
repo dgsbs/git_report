@@ -63,15 +63,15 @@ namespace ReportCreator
         private void CreateSeparatorDictionary()
         {
             var outputSeparator = configuration.GetSection("outputSeparator");
-            SeparatorDictionary.Add(Separator.Output, outputSeparator.Value.ToString());
+            SeparatorDictionary.Add(Separator.Output, outputSeparator.Value);
 
             var commitSeparator = configuration.GetSection("commitSeparator");
             SeparatorDictionary.Add(Separator.Commit, commitSeparator.Value);
         }
-        public enum Separator
-        {
-            Output,
-            Commit
-        }
+    }
+    public enum Separator
+    {
+        Output,
+        Commit
     }
 }

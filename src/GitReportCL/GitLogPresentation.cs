@@ -6,7 +6,7 @@ namespace GitReport.CLI
 {
     class GitLogPresentation
     {
-        public void PresentReport(Dictionary<HashIdKey, AllDataFromCommit> dictionary)
+        public void PresentReport(Dictionary<HashId, CommitComponentData> dictionary)
         {
             if (dictionary.Count == 0)
             {
@@ -25,8 +25,8 @@ namespace GitReport.CLI
                     $"{dictionaryItem.Value.CommiterName}," +
                     $"{date}," +
                     $"{dictionaryItem.Value.CommitMessage}," +
-                    $"{dictionaryItem.Value.InsertionCounter}," +
-                    $"{dictionaryItem.Value.DeletionCounter}");
+                    $"{dictionaryItem.Value.ComponentInsertions}," +
+                    $"{dictionaryItem.Value.ComponentDeletions}");
             }
         }
     }

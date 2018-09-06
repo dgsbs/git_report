@@ -9,11 +9,11 @@ namespace GitReport.CLI
             var gitArgument = new GitArguments();
             var newArgs = gitArgument.ManageGitArguments(args);
             
-            var gitArgsValidator =
+            var argumentValidator =
                 new ArgumentsValidation(gitArgument, new DirectoryValidation());
             var errorHandler = new GitLogErrors(gitArgument);
 
-            while (!gitArgsValidator.AreDatesPathValid(newArgs))
+            while (!argumentValidator.AreDatesPathValid(newArgs))
             {
                 newArgs = errorHandler.FixDatePathError(newArgs);
             }
@@ -23,7 +23,7 @@ namespace GitReport.CLI
             var processOutput = processRunner.RunGitLogProcess();
 
             var reportHandler = new GitReportCreator(jsonConfig);
-            var report = reportHandler.CreateCompleteDictionary(processOutput);
+            var report = reportHandler.GetReportDictionary(processOutput);
 
             var reportPresentation = new GitLogPresentation();
             reportPresentation.PresentReport(report);
