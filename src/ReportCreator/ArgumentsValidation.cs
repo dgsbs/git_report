@@ -1,33 +1,38 @@
 ﻿using System;
 
-namespace GitCounter
+namespace ReportCreator
 {
     public class ArgumentsValidation 
     {
-        GitDiffArguments gitArgument = new GitDiffArguments();
-        IDirectoryValidation directoryValidation;
-        public ArgumentsValidation(GitDiffArguments gitArgument, IDirectoryValidation directoryValidation)
+        public GitArguments GitArgument { get; private set; } 
+        private IDirectoryValidation directoryValidation;
+        public ArgumentsValidation(GitArguments gitArgument,
+            IDirectoryValidation directoryValidation)
         {
-            this.gitArgument = gitArgument;
+            GitArgument = gitArgument;
             this.directoryValidation = directoryValidation;
         }
-        public bool AreDatesPathValid(string[] arguments)         
+        public bool AreDatesPathValid(string[] arguments)
         {
-            bool sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
-            gitArgument.DateSince = SinceDate;
+            var sinceDateValidator = DateTime.TryParse(arguments[0], out var SinceDate);
+            GitArgument.DateSince = SinceDate;
 
-            bool beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
-            gitArgument.DateBefore = BeforeDate;
+            var beforeDateValidator = DateTime.TryParse(arguments[1], out var BeforeDate);
+            GitArgument.DateBefore = BeforeDate;
 
-            bool pathExistenceValidator = directoryValidation.CheckIfDirectoryIsValid(arguments[2]);
+            var pathValidator = this.directoryValidation.IsDirectoryValid(arguments[2]);
 
-            if (pathExistenceValidator)
+            if (pathValidator)
             {
-                gitArgument.GitPath = arguments[2];
+                GitArgument.GitPath = arguments[2];
+            }
+            else
+            {
+                GitArgument.GitPath = "";
             }
 
-            if (!sinceDateValidator || !beforeDateValidator || !pathExistenceValidator ||
-                SinceDate > BeforeDate)
+            if (!sinceDateValidator || !beforeDateValidator ||
+                !pathValidator || SinceDate > BeforeDate)
             {
                 return false;
             }

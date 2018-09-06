@@ -1,12 +1,12 @@
 ﻿using System.IO;
 
-namespace GitCounter
+namespace ReportCreator
 {
     public class DirectoryValidation : IDirectoryValidation
     {
-        public bool CheckIfDirectoryIsValid(string arg)
+        public bool IsDirectoryValid(string path)
         {
-            return Directory.Exists(arg);
+            return Directory.Exists(path);
         }
     }
 }

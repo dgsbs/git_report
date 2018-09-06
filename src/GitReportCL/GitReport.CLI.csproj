@@ -5,6 +5,15 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>GitReport.CLI</AssemblyName>
     <RootNamespace>GitReport.CLI</RootNamespace>
+	<RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

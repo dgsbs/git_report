@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using GitCounter;
+﻿using ReportCreator;
 
 namespace GitReport.CLI
 {
@@ -8,46 +6,27 @@ namespace GitReport.CLI
     {
         static void Main(string[] args)
         {
-            GitDiffArguments gitArgument = new GitDiffArguments();
-            GitDiffErrors errorManager = new GitDiffErrors();
+            var gitArgument = new GitArguments();
+            var newArgs = gitArgument.ManageGitArguments(args);
             
-            if (args.Length == 3)
+            var argumentValidator =
+                new ArgumentsValidation(gitArgument, new DirectoryValidation());
+            var errorHandler = new GitLogErrors(gitArgument);
+
+            while (!argumentValidator.AreDatesPathValid(newArgs))
             {
-                RunGitDiff(args, gitArgument);
-            }
-            else
-            {
-                string[] newArgs = errorManager.CreateArgsForGitDiffReport();
-                RunGitDiff(newArgs, gitArgument);
+                newArgs = errorHandler.FixDatePathError(newArgs);
             }
 
-            void RunGitDiff (string[] arguments, GitDiffArguments gitArg)
-            {
-                IDirectoryValidation directoryValidation = new DirectoryValidation();
-                ArgumentsValidation gitArgsValidator = 
-                    new ArgumentsValidation(gitArgument, directoryValidation);
+            IJsonConfig jsonConfig = new JsonConfig();
+            var processRunner = new GitProcess(gitArgument, jsonConfig);
+            var processOutput = processRunner.RunGitLogProcess();
 
-                while (!gitArgsValidator.AreDatesPathValid(arguments))
-                {
-                    string[] editedArgs = new string[3];
-                    errorManager.FixDatePathError(arguments, gitArg, out editedArgs);
-                    arguments = editedArgs;
-                }
-                GitDiffProcess processRunner = new GitDiffProcess();
-                string processOutput = processRunner.RunGitDiffProcess(gitArg);                
-                ReportCreator reportManager = new ReportCreator(new JsonConfig());
-                ShowReport(reportManager.CreateReport(processOutput));
-            }
+            var reportHandler = new GitReportCreator(jsonConfig);
+            var report = reportHandler.GetReportDictionary(processOutput);
 
-            void ShowReport (Dictionary<string, ModificationCounters> dictionaryManager)
-            {
-                foreach (var dictionaryItem in dictionaryManager)
-                {
-                    Console.WriteLine("Component id: {0}\nCode added in component: " +
-                        "{1}\nCode removed in component: {2}\n", dictionaryItem.Key,
-                        dictionaryItem.Value.InsertionCounter, dictionaryItem.Value.DeletionCounter);
-                }
-            }
+            var reportPresentation = new GitLogPresentation();
+            reportPresentation.PresentReport(report);
         }
     }
 }

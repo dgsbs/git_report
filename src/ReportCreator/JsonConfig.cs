@@ -1,42 +1,77 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.IO;
 
-namespace GitCounter
+namespace ReportCreator
 {
     public class JsonConfig : IJsonConfig
     {
-        public static IConfiguration Configuration { get; set; }
-        Dictionary<string, string> jsonDictionary = new Dictionary<string, string>();
+        private static IConfiguration configuration;
+        private Dictionary<string, string> idPathDictionary;
+        public Dictionary<Separator, string> SeparatorDictionary { get; private set; }
         public JsonConfig()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("jsconfig.json", optional: true, reloadOnChange: true);
-            Configuration = builder.Build();
-            CreateJsonDictionary();
+                .AddJsonFile("AllComponents.json", optional: true, reloadOnChange: true);
+            configuration = builder.Build();
+
+            this.idPathDictionary = new Dictionary<string, string>();
+            SeparatorDictionary = new Dictionary<Separator, string>();
+
+            CreateIdPathDictionary();
+            CreateSeparatorDictionary();
         }
         public bool TryMatchPath(string pathFromProcess, out string finalId)
         {
-            foreach (var jsonId in jsonDictionary)
+            foreach (var idPath in this.idPathDictionary)
             {
-                if (pathFromProcess.Contains(jsonId.Value))
+                if (pathFromProcess.Contains(idPath.Value))
                 {
-                    finalId = jsonId.Key;
+                    finalId = idPath.Key;
                     return true;
                 }
             }
             finalId = string.Empty;
             return false;
         }
-        private void CreateJsonDictionary()
+        public string GetSeparator(Separator separator)
         {
-            var pathKeys = Configuration.GetSection("components").GetChildren();
+            switch (separator)
+            {
+                case Separator.Commit:
+                {
+                    return SeparatorDictionary[Separator.Commit];
+                }
+                case Separator.Output:
+                {
+                    return SeparatorDictionary[Separator.Output];
+                }
+            }
+            return string.Empty;
+        }
+        private void CreateIdPathDictionary()
+        {
+            var pathKeys = configuration.GetSection("components").GetChildren();
             char[] charsToTrim = { '*' };
+
             foreach (var key in pathKeys)
             {
-                jsonDictionary.Add(key["id"], key["paths"].TrimEnd(charsToTrim));
+                this.idPathDictionary.Add(key["id"], key["paths"].TrimEnd(charsToTrim));
             }
         }
+        private void CreateSeparatorDictionary()
+        {
+            var outputSeparator = configuration.GetSection("outputSeparator");
+            SeparatorDictionary.Add(Separator.Output, outputSeparator.Value);
+
+            var commitSeparator = configuration.GetSection("commitSeparator");
+            SeparatorDictionary.Add(Separator.Commit, commitSeparator.Value);
+        }
+    }
+    public enum Separator
+    {
+        Output,
+        Commit
     }
 }
