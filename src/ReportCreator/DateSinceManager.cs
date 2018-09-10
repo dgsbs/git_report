@@ -9,6 +9,11 @@ namespace ReportCreator
             var numberOfDays = GetNumberOfDays(daysNumber);
             DateTime dateSince;
            
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+            {
+                numberOfDays += 2;
+            }
+
             var hour = DateTime.Now.Hour;
             dateSince = (hour < 10 && daysNumber == FromToday.OneDay)
                 ? DateTime.Today.AddDays(-(numberOfDays + 1)) :
