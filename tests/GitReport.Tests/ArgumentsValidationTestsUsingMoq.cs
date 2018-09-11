@@ -4,7 +4,7 @@ using ReportCreator;
 
 namespace GitReport.Tests
 {
-    public class DirectoryValidationMoq
+    public class ArgumentsValidationTestsUsingMoq
     {
         IDirectoryValidation validationMock = Mock.Of<IDirectoryValidation>(directoryValidation =>
             directoryValidation.IsDirectoryValid(It.Is<string>(path => path == @"C:\git")) == true);

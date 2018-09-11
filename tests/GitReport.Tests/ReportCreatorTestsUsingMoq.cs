@@ -4,7 +4,7 @@ using ReportCreator;
 
 namespace GitReport.Tests
 {
-    public class JsonConfigMoq
+    public class ReportCreatorTestsUsingMoq
     {
         static string[] components = new string[]
         {
