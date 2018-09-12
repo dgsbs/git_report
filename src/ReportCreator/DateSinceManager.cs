@@ -14,7 +14,7 @@ namespace ReportCreator
             if (DateTime.Now.DayOfWeek == DayOfWeek.Monday
                 && hour < 10 )
             {
-                numberOfDays += 2;
+                numberOfDays += 3;
                 isMonday = true;
             }
 

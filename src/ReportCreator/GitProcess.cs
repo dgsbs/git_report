@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace ReportCreator
 {
@@ -24,8 +25,9 @@ namespace ReportCreator
                 WorkingDirectory = this.gitPath,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                Arguments = processArguments
-            };
+                Arguments = processArguments,
+                StandardOutputEncoding = Encoding.UTF8
+        };
             
             using (var process = new Process())
             {
