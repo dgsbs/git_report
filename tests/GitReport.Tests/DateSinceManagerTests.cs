@@ -6,7 +6,6 @@ namespace GitReport.Tests
 {
     public class DateSinceManagerTests
     {
-        
         [Fact]
         public void GetNumberOfDays_OneDay_ReturnValueCorrect()
         {

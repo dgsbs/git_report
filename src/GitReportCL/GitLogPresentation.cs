@@ -13,6 +13,7 @@ namespace GitReport.CLI
                 Console.WriteLine("Json configuration file was not found. " +
                     "Check if it is in application folder.");
             }
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             var writer = Console.Out;
 
             writer.WriteLine("CommitHash, ComponentId, CommiterName, CommitDate, CommitInfo, " +
