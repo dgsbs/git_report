@@ -24,7 +24,7 @@ namespace ReportCreator
                 WorkingDirectory = this.gitPath,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                Arguments = processArguments
+                Arguments = processArguments,
             };
             
             using (var process = new Process())
@@ -50,7 +50,7 @@ namespace ReportCreator
         private string BuildGitLogCommand()
         {
             return $"log --pretty=\"" +
-                $"{this.jsonConfig.GetSeparator(Separator.Output)}%n%H%n%cn%n%ci%n%s%n" +
+                $"{this.jsonConfig.GetSeparator(Separator.Output)}%n%H%n%an%n%ci%n%s%n" +
                 $"{this.jsonConfig.GetSeparator(Separator.Commit)}\" --numstat " +
                 $"--since=\"{this.dateSince.ToShortDateString()} 24:00\"" +
                 $" --before=\"{this.dateBefore.ToShortDateString()} 24:00\"";

@@ -1,6 +1,6 @@
 ﻿namespace ReportCreator
 {
-    public class CommitComponentData
+    public class CommitComponentData 
     {
         public int ComponentInsertions { get; set; }
         public int ComponentDeletions { get; set; }

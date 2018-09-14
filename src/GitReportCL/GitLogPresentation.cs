@@ -13,7 +13,9 @@ namespace GitReport.CLI
                 Console.WriteLine("Json configuration file was not found. " +
                     "Check if it is in application folder.");
             }
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             var writer = Console.Out;
+
             writer.WriteLine("CommitHash, ComponentId, CommiterName, CommitDate, CommitInfo, " +
                 "Insertions, Deletions");
             foreach (var dictionaryItem in dictionary)
@@ -24,7 +26,7 @@ namespace GitReport.CLI
                     $"{dictionaryItem.Key.ComponentId}," +
                     $"{dictionaryItem.Value.CommiterName}," +
                     $"{date}," +
-                    $"{dictionaryItem.Value.CommitMessage}," +
+                    $"\"{dictionaryItem.Value.CommitMessage}\"," +
                     $"{dictionaryItem.Value.ComponentInsertions}," +
                     $"{dictionaryItem.Value.ComponentDeletions}");
             }

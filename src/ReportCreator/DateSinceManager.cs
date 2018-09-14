@@ -8,17 +8,24 @@ namespace ReportCreator
         {
             var numberOfDays = GetNumberOfDays(daysNumber);
             DateTime dateSince;
-           
+            bool isMonday = false;
             var hour = DateTime.Now.Hour;
-            dateSince = (hour < 10 && daysNumber == FromToday.OneDay)
+
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && hour < 10 )
+            {
+                numberOfDays += 3;
+                isMonday = true;
+            }
+
+            dateSince = (hour < 10 && daysNumber == FromToday.OneDay && isMonday == false)
                 ? DateTime.Today.AddDays(-(numberOfDays + 1)) :
                   DateTime.Today.AddDays(-numberOfDays);
 
             return dateSince.ToString();
         }
-        private int GetNumberOfDays(FromToday numberOfDays)
+        private int GetNumberOfDays(FromToday daysNumber)
         {
-            switch (numberOfDays)
+            switch (daysNumber)
             {
                 case FromToday.OneDay:
                     {
